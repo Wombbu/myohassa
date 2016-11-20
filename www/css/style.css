@@ -1,22 +1,24 @@
 /* Empty. Add your own CSS if you like */
 input[type="number"] {
-font-size:50px;
-height: 60px;
-text-align: center;
+  font-size:50px;
+  height: 60px;
+  text-align: center;
 }
 
-.center-content > * {
--webkit-box-ordinal-group: 1;
--moz-box-ordinal-group: 1;
--webkit-order: 0;
--ms-flex-order: 0;
-order: 0;
--webkit-box-flex: 1;
--moz-box-flex: 1;
--webkit-flex: 1 1 auto;
--ms-flex: 1 1 auto;
-flex: 1 1 auto;
--webkit-align-self: auto;
--ms-flex-item-align: auto;
-align-self: auto;
+div.timeDiff {
+  height: 120px;
+  padding-top: 17px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+}
+
+p.timeDiff {
+  font-size: 35px;
+  line-height: 35px;
+}
+
+.centered {
+  text-align: center;
 }

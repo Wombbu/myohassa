@@ -2,8 +2,28 @@
   <div class="buttons">
     <a class="button icon-left ion-chevron-left button-clear header-button" ui-sref="choose"></a>
   </div>
-  <h1 class="title">Tietoa</h1>
+  <h1 class="title" ng-show="(trainType && trainNumber)">{{trainType}}-{{trainNumber}}</h1>
 </ion-header-bar>
 
 <ion-content class="has-header">
+  <!-- Time difference -->
+  <div class="timeDiff bg-vr-blue">
+    <div ng-show="timeDiff !== undefined">
+      <!-- Juna ei aikataulussa -->
+      <p class="timeDiff vr-main-white" ng-show="timeDiff > 0">Myöhässä</p>
+      <p class="timeDiff vr-main-white" ng-show="timeDiff < 0">Aikaisessa</p>
+      <p class="timeDiff vr-main-white" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
+      <p class="timeDiff vr-main-white" ng-show="getCause()"> {{getCause()}} </p>
+      <!-- Juna aikataulussa -->
+      <p class="timeDiff vr-main-white centered" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
+    </div>
+    <div ng-show="timeDiff === undefined">
+      <p class="timeDiff vr-main-white">Juna ei liikenteessä</p>
+    </div>
+  </div>
+
+  <!-- Previous stop -->
+  <div class="prevStop">
+
+  </div>
 </ion-content>

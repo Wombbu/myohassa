@@ -1,4 +1,5 @@
 angular.module('app', ['ionic', 'ngCordova'])
+
 .run(($ionicPlatform, $rootScope, $ionicViewSwitcher, $ionicHistory) => {
   $ionicPlatform.ready(() => {
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -15,6 +16,7 @@ angular.module('app', ['ionic', 'ngCordova'])
       }
   });
 })
+
 .config(($stateProvider, $urlRouterProvider) => {
   $stateProvider
     .state('choose', {
@@ -27,6 +29,7 @@ angular.module('app', ['ionic', 'ngCordova'])
       controller: 'InfoCtrl' });
   $urlRouterProvider.otherwise('/choose');
 })
+
 .service('data', function($http) {
   this.causes = undefined
   this.stations = undefined
@@ -45,26 +48,40 @@ angular.module('app', ['ionic', 'ngCordova'])
   }
 
   this.fetch = (trainNumber, success, error) => {
+      const callbackIfAllFetched = () => !(this.causes && this.stations && this.trainInfo) || success()
+
       this.stations
-      || this.doUntilSuccess(this.getStations, 20, (res) => this.stations = res.data)
+      || this.doUntilSuccess(this.getStations, 20,
+        (res) => {
+          this.stations = res.data.filter((val) => val.passengerTraffic)
+          callbackIfAllFetched()
+        })
 
       this.causes
-      || this.doUntilSuccess(this.getCauses, 20, (res) => this.causes = res.data)
+      || this.doUntilSuccess(this.getCauses, 20,
+        (res) => {
+          this.causes = res.data
+          callbackIfAllFetched()
+        })
 
       this.getTrains(trainNumber)(
-        (res) => (res.data.length != 0) ? (this.trainInfo = res.data, success()) : error("Junatietoja ei löytynyt. Onkohan junanumero oikea?"),
+        (res) => (res.data[0]) ? (this.trainInfo = res.data[0], callbackIfAllFetched()) : error("Junatietoja ei löytynyt. Onkohan junanumero oikea?"),
         (err) => error("Verkkovirhe. Hö.")
       )
   }
 })
+
 .service('uiUtil', function($cordovaToast, $ionicLoading) {
   this.shortToast = (msg) => $cordovaToast.show(msg, 'short', 'center')
 
   this.load = () => $ionicLoading.show({ template: 'Ladataan tietoja', duration: 3000 })
   this.stopLoad = () => $ionicLoading.hide()
 })
+
+.filter('abs', () => (num) => Math.abs(num))
+
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
-  $scope.train = {number:undefined}
+  $scope.train = {number:65}
 
   const fetchDataAndSwitchScene = () => {
     uiUtil.load()
@@ -76,6 +93,48 @@ angular.module('app', ['ionic', 'ngCordova'])
   $scope.tryFetchTrainData = () =>
     ($scope.train.number) ? fetchDataAndSwitchScene() : uiUtil.shortToast('Antaisitko junanumeron?')
 })
-.controller('InfoCtrl', function($ionicPlatform, $scope, $http, data, $state) {
-  $scope.goToChoose = () => $state.go("choose");
+
+.controller('InfoCtrl', function($ionicPlatform, $scope, data) {
+  console.log(data)
+  const onlyPassengerStops = (stop) => stop.trainStopping && stop.commercialStop
+
+  const causeCodeToExplanation = (cause) => data.causes.filter((cause2) => cause.categoryCode == cause2.categoryCode)[0].categoryName
+  const getCausesForStop = (stop) => {
+    stop.causes = stop.causes.map(causeCodeToExplanation)
+    return stop
+  }
+
+  const stationCodeToName = (code) => {
+    var station = data.stations.filter((station) => code == station.stationShortCode)
+    return station[0] ? station[0].stationName : code
+  }
+  const getStationName = (stop) => {
+    stop.name = stationCodeToName(stop.stationShortCode)
+    return stop
+  }
+
+  const setScopeData = (train) => {
+    $scope.trainType = train.trainType
+    $scope.trainNumber = train.trainNumber
+
+    const stops =
+      train.timeTableRows
+        .map(getCausesForStop)
+        .map(getStationName)
+        .filter(onlyPassengerStops)
+
+    const prevStops = stops.filter((stop) => !stop.liveEstimateTime)
+    const nextStops = stops.filter((stop) => stop.liveEstimateTime)
+    console.log("Prev: ", prevStops)
+    console.log("Next: ", nextStops)
+
+    const trainMoving = nextStops[0] ? true : false;
+    if(trainMoving) {
+      $scope.timeDiff = nextStops[0].differenceInMinutes
+      $scope.prevStops = prevStops;
+      $scope.nextStops = nextStops;
+    }
+
+  }
+  setScopeData(data.trainInfo)
 })
