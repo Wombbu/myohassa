@@ -6,14 +6,8 @@ angular.module('app', ['ionic', 'ngCordova'])
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
     }
-    if(window.StatusBar) { StatusBar.styleDefault() }
 
-    if(window.Connection && navigator.connection.type == Connection.NONE) {
-      $ionicPopup.confirm({
-        title: "Ei verkkoyhteyttä",
-        content: "Laitteessasi ei ole verkkoyhteyttä"})
-        .then((result) => ionic.Platform.exitApp() );
-      }
+    if(window.StatusBar) { StatusBar.styleDefault() }
   });
 })
 
@@ -36,77 +30,65 @@ angular.module('app', ['ionic', 'ngCordova'])
   this.stations = undefined
   this.trainInfo = undefined
 
-  this.get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
-  this.getCauses = this.get('https://rata.digitraffic.fi/api/v1/metadata/cause-category-codes')
-  this.getStations = this.get('https://rata.digitraffic.fi/api/v1/metadata/stations')
-  this.getTrains = (number) => this.get(`https://rata.digitraffic.fi/api/v1/live-trains/${number}`)
-
-  this.doUntilSuccess = (reqFunc, maxTimes, success) => {
-    if(maxTimes <= 0) return;
-    reqFunc(
-      (res) => success(res),
-      (err) => this.doUntilSuccess(rewFunc, maxTimes-1, success))
-  }
-
   this.fetch = (trainNumber, success, error) => {
-      const callbackIfAllFetched = () => !(this.causes && this.stations && this.trainInfo) || success()
+    const get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
+    const getStations = get('https://rata.digitraffic.fi/api/v1/metadata/stations')
+    const getCauses =   get('https://rata.digitraffic.fi/api/v1/metadata/cause-category-codes')
+    const getTrains =   get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
+
+    const callbackIfAllFetched = () => !(this.causes && this.stations && this.trainInfo) || success()
+    const errorMsg = "Verkkovirhe. Hö."
 
       this.stations
-      || this.doUntilSuccess(this.getStations, 20,
+      || getStations(
         (res) => {
           this.stations = res.data.filter((val) => val.passengerTraffic)
           callbackIfAllFetched()
-        })
+        },
+        (err) => error(errorMsg))
 
       this.causes
-      || this.doUntilSuccess(this.getCauses, 20,
+      || getCauses(
         (res) => {
           this.causes = res.data
           callbackIfAllFetched()
-        })
+        },
+        (err) => error(errorMsg))
 
-      this.getTrains(trainNumber)(
+      getTrains(
         (res) => (res.data[0]) ? (this.trainInfo = res.data[0], callbackIfAllFetched()) : error("Junatietoja ei löytynyt. Onkohan junanumero oikea?"),
-        (err) => error("Verkkovirhe. Hö.")
-      )
+        (err) => error(errorMsg))
   }
 })
 
 .service('uiUtil', function($cordovaToast, $ionicLoading) {
-  this.shortToast = (msg) => $cordovaToast.show(msg, 'short', 'center')
+  this.toast = (msg) => $cordovaToast.show(msg, 'short', 'center')
 
-  this.load = () => $ionicLoading.show({ template: 'Ladataan tietoja', duration: 3000 })
+  this.load = () => $ionicLoading.show({ template: 'Ladataan junan tietoja', duration: 3000 })
   this.stopLoad = () => $ionicLoading.hide()
 })
 
 .filter('abs', () => (num) => Math.abs(num))
-
-.filter('date', () => (dateStr) => {
-  const date = moment(dateStr)
-  return date.fromNow()
-})
 
 .filter('fromNow', () => (dateStr) => {
   const date = moment(dateStr)
   return date.locale("fi").fromNow()
 })
 
-
-
 .filter("remove", () => (input, remove) => !input || input.replace(remove, ''))
 
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
-  $scope.train = {number:144}
+  $scope.train = {number: undefined}
 
   const fetchDataAndSwitchScene = () => {
     uiUtil.load()
     data.fetch(
       $scope.train.number,
       () => {uiUtil.stopLoad(); $state.go("info")},
-      (error) => {uiUtil.stopLoad(); uiUtil.shortToast(error)})}
+      (error) => {uiUtil.stopLoad(); uiUtil.toast(error)})}
 
   $scope.tryFetchTrainData = () =>
-    ($scope.train.number) ? fetchDataAndSwitchScene() : uiUtil.shortToast('Antaisitko junanumeron?')
+    ($scope.train.number) ? fetchDataAndSwitchScene() : uiUtil.toast('Antaisitko junanumeron?')
 })
 
 .controller('InfoCtrl', function($ionicPlatform, $scope, data) {

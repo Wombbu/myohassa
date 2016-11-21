@@ -8,18 +8,15 @@
 <ion-content class="has-header">
   <!-- Time difference -->
   <div class="box left shadow shadow">
-
     <div class="boxHeader bg-vr-blue">
       <p class="vr-main-white medium">Aikataulussa?</p>
     </div>
-
     <div class="boxContent bg-vr-light-green" ng-show="timeDiff !== undefined">
       <!-- Juna ei aikataulussa -->
       <p class="large vr-dark-grey" ng-show="timeDiff > 0">Myöhässä</p>
       <p class="large vr-dark-grey" ng-show="timeDiff < 0">Aikaisessa</p>
       <p class="large vr-dark-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
       <p class="small vr-dark-grey" ng-show="getCause()"> {{getCause()}} </p>
-      <!-- <p class="small vr-dark-grey" ng-show="true"> {{"Liikennetekninen asia"}} </p> -->
       <!-- Juna aikataulussa -->
       <p class="large vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
     </div>
@@ -28,9 +25,6 @@
     </div>
   </div>
 
-  <!-- <div class="timeTableHeader bg-vr-white" ng-show="prevStops || nextStops">
-
-  </div> -->
   <!-- Previous stop -->
   <div class="box right shadow" ng-show="prevStops.length > 0">
     <div class="boxHeader bg-vr-dark-grey">
@@ -55,5 +49,4 @@
       </div>
     </div>
   </div>
-
 </ion-content>
