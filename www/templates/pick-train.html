@@ -1,14 +1,20 @@
 <ion-header-bar align-title="center" class="bar-positive" ng-style="{'background-color': '#57A50B'}">
-  <h1 class="title">Valitse juna</h1>
+  <h1 class="title">Junakaveri</h1>
 </ion-header-bar>
 
 <ion-content class="has-header">
   <div class="list list-inset">
     <label class="item item-input">
-      <input type="number" placeholder="Numero" ng-model="train.number">
+      <input type="number" placeholder="Junan numero" ng-model="train.number">
     </label>
-    <button class="button button-block button-positive" ng-click="tryFetchTrainData()">
-      Etsi!
+    <button class="button button-block button-positive" ng-click="tryFetchStopData(train.number)">
+      Aikataulu ja pysäkit
+    </button>
+    <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
+      Vaunut ja tietoa
+    </button>
+    <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
+      Ravintolavaunun hinnasto
     </button>
   </div>
 </ion-content>

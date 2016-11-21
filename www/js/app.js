@@ -18,25 +18,39 @@ angular.module('app', ['ionic', 'ngCordova'])
       url: '/choose',
       templateUrl: './templates/pick-train.html',
       controller: 'ChooseCtrl' })
-    .state('info', {
-      url: '/info',
+    .state('stop-info', {
+      url: '/stop-info',
+      templateUrl: './templates/stop-info.html',
+      controller: 'StopInfoCtrl' })
+    .state('train-info', {
+      url: '/train-info',
       templateUrl: './templates/train-info.html',
-      controller: 'InfoCtrl' });
+      controller: 'TrainInfoCtrl' });
   $urlRouterProvider.otherwise('/choose');
 })
+
+.filter('abs', () => (num) => Math.abs(num))
+
+.filter('fromNow', () => (dateStr) => {
+  const date = moment(dateStr)
+  return date.locale("fi").fromNow()
+})
+
+.filter("remove", () => (input, remove) => !input || input.replace(remove, ''))
 
 .service('data', function($http) {
   this.causes = undefined
   this.stations = undefined
+  this.stopInfo = undefined
   this.trainInfo = undefined
 
-  this.fetch = (trainNumber, success, error) => {
-    const get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
+  const get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
+
+  this.getStops = (trainNumber) => (success, error) => {
     const getStations = get('https://rata.digitraffic.fi/api/v1/metadata/stations')
     const getCauses =   get('https://rata.digitraffic.fi/api/v1/metadata/cause-category-codes')
-    const getTrains =   get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
-
-    const callbackIfAllFetched = () => !(this.causes && this.stations && this.trainInfo) || success()
+    const getStops =   get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
+    const callbackIfAllFetched = () => !(this.causes && this.stations && this.stopInfo) || success()
     const errorMsg = "Verkkovirhe. Hö."
 
       this.stations
@@ -55,9 +69,19 @@ angular.module('app', ['ionic', 'ngCordova'])
         },
         (err) => error(errorMsg))
 
-      getTrains(
-        (res) => (res.data[0]) ? (this.trainInfo = res.data[0], callbackIfAllFetched()) : error("Junatietoja ei löytynyt. Onkohan junanumero oikea?"),
+      getStops(
+        (res) => (res.data[0]) ? (this.stopInfo = res.data[0], callbackIfAllFetched()) : error("Tietoja ei löytynyt. Onkohan junanumero oikea?"),
         (err) => error(errorMsg))
+  }
+
+  this.getTrainInfo = (trainNumber) => (success, error) => {
+    const getTrainInfo = get(`https://rata.digitraffic.fi/api/v1/compositions/${trainNumber}?departure_date=${moment().format('YYYY-MM-DD')}`)
+    getTrainInfo(
+      (res) => {
+        this.trainInfo = res.data
+        success()
+      }, () => error("Tietoja ei löytynyt. Onkohan junanumero oikea?")
+    )
   }
 })
 
@@ -66,32 +90,26 @@ angular.module('app', ['ionic', 'ngCordova'])
 
   this.load = () => $ionicLoading.show({ template: 'Ladataan junan tietoja', duration: 3000 })
   this.stopLoad = () => $ionicLoading.hide()
+  this.date = (dateStr) => moment(dateStr)
 })
-
-.filter('abs', () => (num) => Math.abs(num))
-
-.filter('fromNow', () => (dateStr) => {
-  const date = moment(dateStr)
-  return date.locale("fi").fromNow()
-})
-
-.filter("remove", () => (input, remove) => !input || input.replace(remove, ''))
 
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
-  $scope.train = {number: 50}
+  $scope.train = {number: 865}
 
-  const fetchDataAndSwitchScene = () => {
+  const getDataSetState = (fetchFunc, newState) => {
     uiUtil.load()
-    data.fetch(
-      $scope.train.number,
-      () => {uiUtil.stopLoad(); $state.go("info")},
+    fetchFunc(
+      () => {uiUtil.stopLoad(); $state.go(newState)},
       (error) => {uiUtil.stopLoad(); uiUtil.toast(error)})}
 
-  $scope.tryFetchTrainData = () =>
-    ($scope.train.number) ? fetchDataAndSwitchScene() : uiUtil.toast('Antaisitko junanumeron?')
+  $scope.tryFetchStopData = (train) =>
+    ($scope.train.number) ? getDataSetState(data.getStops(train), "stop-info") : uiUtil.toast('Antaisitko junanumeron?')
+
+  $scope.tryFetchTrainData = (train) =>
+    ($scope.train.number) ? getDataSetState(data.getTrainInfo(train), "train-info") : uiUtil.toast('Antaisitko junanumeron?')
 })
 
-.controller('InfoCtrl', function($ionicPlatform, $scope, data) {
+.controller('StopInfoCtrl', function($scope, data) {
   const onlyPassengerStops = (stop) => stop.trainStopping && stop.commercialStop
   const onlyArrivals = (stop) => stop.type === 'ARRIVAL'
 
@@ -135,6 +153,34 @@ angular.module('app', ['ionic', 'ngCordova'])
       $scope.prevStops = prevStops;
       $scope.nextStops = nextStops;
     }
+  }
+  setScopeData(data.stopInfo)
+})
+
+.controller('TrainInfoCtrl', function($scope, data) {
+  const betweenTimes = (now, dateParser) => (before, after) =>
+    now.diff(dateParser(before)) > 0 && now.diff(dateParser(after)) < 0
+  const begin = (obj) => obj.beginTimeTableRow.scheduledTime
+  const end = (obj) => obj.endTimeTableRow.scheduledTime
+
+  const setScopeData = (train) => {
+    $scope.trainType = train.trainType
+    $scope.trainNumber = train.trainNumber
+
+    const thisMomentBetween = betweenTimes(moment(), moment)
+    const currentSetup = data.trainInfo.journeySections
+      .filter((section) => thisMomentBetween(begin(section), end(section)))[0]
+
+    if(currentSetup) {
+      console.log(currentSetup)
+      $scope.locomotives = currentSetup.locomotives.length
+      $scope.topSpeed = currentSetup.maximumSpeed
+      $scope.length = currentSetup.totalLength
+
+      $scope.wagons = currentSetup.wagons
+      console.log(currentSetup.wagons)
+    }
+
   }
   setScopeData(data.trainInfo)
 })

@@ -7,33 +7,27 @@
 
 <ion-content class="has-header bg-light-grey">
   <!-- Time difference -->
-  <div class="box left shadow shadow">
+  <div class="box left shadow">
     <div class="boxHeader bg-vr-blue">
-      <p class="vr-main-white medium">Aikataulussa?</p>
+      <p class="vr-main-white medium">Junatietoja</p>
     </div>
-    <div class="boxContent bg-vr-white" ng-show="timeDiff !== undefined">
-      <!-- Juna ei aikataulussa -->
-      <p class="large vr-dark-grey" ng-show="timeDiff > 0">Myöhässä</p>
-      <p class="large vr-dark-grey" ng-show="timeDiff < 0">Aikaisessa</p>
-      <p class="large vr-dark-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
-      <p class="small vr-dark-grey" ng-show="getCause()"> {{getCause()}} </p>
-      <!-- Juna aikataulussa -->
-      <p class="large vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
-    </div>
-    <div class="boxContent bg-vr-white" ng-show="timeDiff === undefined">
-      <p class="large vr-dark-grey">Juna ei liikenteessä</p>
+    <div class="boxContent bg-vr-white">
+      <p class="large vr-dark-grey">{{trainType}}-{{trainNumber}}</p>
+      <p class="medium vr-grey">Pituus {{length}} metriä</p>
+      <p class="medium vr-grey">Huippunopeus {{topSpeed}} km/h</p>
+
     </div>
   </div>
 
   <!-- Previous stop -->
   <div ng-show="prevStops.length > 0">
-    <div class="box right shadow">
-      <div class="boxHeader bg-vr-dark-grey">
-        <p class="vr-light-green medium">Edellinen asema</p>
+    <div class="box left shadow">
+      <div class="boxHeader bg-vr-blue">
+        <p class="vr-light-green medium">Vaunutietoa</p>
       </div>
       <div class="boxContent bg-vr-white">
         <p class="vr-dark-grey large">{{prevStops[prevStops.length-1].name | remove: ' asema'}}</h1>
-        <p class="vr-grey medium small-padding">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
+        <p class="vr-dark-grey medium">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
       </div>
     </div>
   </div>
@@ -47,7 +41,7 @@
       <div class="boxContent bg-vr-white">
         <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
         <p class="medium vertical-padding vr-grey" ng-show="!stop.cancelled">{{stop.liveEstimateTime | fromNow}}</p>
-        <p class="medium vr-dark-grey" ng-show="!stop.cancelled">Raide {{stop.commercialTrack}}</p>
+        <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.commercialTrack}}</p>
         <!-- If the stop is cancelled -->
         <p class="medium vr-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
       </div>

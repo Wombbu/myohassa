@@ -1,13 +1,13 @@
 
 @keyframes left {
-  0%{ transform: translateX(-350px);
+  0%{ transform: translateX(-100px);
       opacity: 0;}
   100% { transform: translateX(0px);
          opacity: 100;}
 }
 
 @keyframes right {
-  0%{ transform: translateX(350px);
+  0%{ transform: translateX(100px);
       opacity: 0;}
   100% { transform: translateX(0px);
          opacity: 100;}
@@ -42,36 +42,39 @@ div.box {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 div.right {
   margin-right: 10px;
   margin-left: 40px;
   animation-name: right;
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   transform: translateX(0);
-  transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease;
 }
 
 div.left {
   margin-left: 10px;
   margin-right: 40px;
   animation-name: left;
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   transform: translateX(0);
-  transition-timing-function: ease-in-out;
+  transition-timing-function: ease;
+  -webkit-transition-timing-function: ease;
 }
 
 div.boxHeader {
   flex:30%;
-  border-top-right-radius: 3px;
-  border-top-left-radius: 3px;
-  text-align: center;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+  text-align: left;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
+  padding-left: 15px;
+  padding-top: 10px;
 }
 
 div.boxContent {
@@ -79,8 +82,8 @@ div.boxContent {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
   flex: 70%;
   padding: 10px 20px 10px 20px;
 }
