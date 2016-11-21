@@ -78,7 +78,7 @@ angular.module('app', ['ionic', 'ngCordova'])
 .filter("remove", () => (input, remove) => !input || input.replace(remove, ''))
 
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
-  $scope.train = {number: undefined}
+  $scope.train = {number: 50}
 
   const fetchDataAndSwitchScene = () => {
     uiUtil.load()
@@ -110,6 +110,12 @@ angular.module('app', ['ionic', 'ngCordova'])
     return stop
   }
 
+  const passed = (passed) => (stop) => {
+    const inPast = moment().diff(
+      moment(stop.liveEstimateTime || stop.actualTime || stop.scheduledTime))
+    return (inPast > 0) ? passed : !passed
+  }
+
   const setScopeData = (train) => {
     $scope.trainType = train.trainType
     $scope.trainNumber = train.trainNumber
@@ -121,8 +127,8 @@ angular.module('app', ['ionic', 'ngCordova'])
       .filter(onlyArrivals)
       .filter(onlyPassengerStops)
 
-    const prevStops = stops.filter((stop) => !stop.liveEstimateTime)
-    const nextStops = stops.filter((stop) => stop.liveEstimateTime)
+    const prevStops = stops.filter(passed(true))
+    const nextStops = stops.filter(passed(false))
 
     if(nextStops[0]) {
       $scope.timeDiff = nextStops[0].differenceInMinutes
