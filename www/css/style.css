@@ -1,3 +1,18 @@
+
+@keyframes left {
+  0%{ transform: translateX(-350px);
+      opacity: 0;}
+  100% { transform: translateX(0px);
+         opacity: 100;}
+}
+
+@keyframes right {
+  0%{ transform: translateX(350px);
+      opacity: 0;}
+  100% { transform: translateX(0px);
+         opacity: 100;}
+}
+
 input[type="number"] {
   font-size:50px;
   height: 60px;
@@ -17,6 +32,11 @@ p,h1,h2,h3 {
   box-shadow: 0px 0px 8px #888888;
 }
 
+.vertical-padding {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 div.box {
   height: 140px;
   margin-top: 10px;
@@ -26,13 +46,21 @@ div.box {
 }
 
 div.right {
-  margin-right: -5px;
+  margin-right: 10px;
   margin-left: 40px;
+  animation-name: right;
+  animation-duration: 1s;
+  transform: translateX(0);
+  transition-timing-function: ease-in-out;
 }
 
 div.left {
-  margin-left: -5px;
+  margin-left: 10px;
   margin-right: 40px;
+  animation-name: left;
+  animation-duration: 1s;
+  transform: translateX(0);
+  transition-timing-function: ease-in-out;
 }
 
 div.boxHeader {
@@ -47,12 +75,12 @@ div.boxHeader {
 }
 
 div.boxContent {
-  text-align: center;
+  text-align: left;
   display: flex;
   justify-content: center;
   flex-direction: column;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
   flex: 70%;
-  padding: 10px;
+  padding: 10px 20px 10px 20px;
 }

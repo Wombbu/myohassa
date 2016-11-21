@@ -27,6 +27,10 @@
   background-color: #A5ACAF;
 }
 
+.bg-light-grey {
+  background-color: #f6f6f6;
+}
+
 /*Text colors*/
 .vr-main-white {
   color: white;
