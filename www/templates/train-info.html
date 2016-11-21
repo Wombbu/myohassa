@@ -1,4 +1,4 @@
-<ion-header-bar align-title="center" class="bar-positive" ng-style="{'background-color': '#57A50B'}">
+<ion-header-bar align-title="center" class="bar-positive shadow" ng-style="{'background-color': '#57A50B'}">
   <div class="buttons">
     <a class="button icon-left ion-chevron-left button-clear header-button" ui-sref="choose"></a>
   </div>
@@ -7,23 +7,53 @@
 
 <ion-content class="has-header">
   <!-- Time difference -->
-  <div class="timeDiff bg-vr-blue">
-    <div ng-show="timeDiff !== undefined">
+  <div class="box left shadow shadow">
+
+    <div class="boxHeader bg-vr-blue">
+      <p class="vr-main-white medium">Aikataulussa?</p>
+    </div>
+
+    <div class="boxContent bg-vr-light-green" ng-show="timeDiff !== undefined">
       <!-- Juna ei aikataulussa -->
-      <p class="timeDiff vr-main-white" ng-show="timeDiff > 0">Myöhässä</p>
-      <p class="timeDiff vr-main-white" ng-show="timeDiff < 0">Aikaisessa</p>
-      <p class="timeDiff vr-main-white" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
-      <p class="timeDiff vr-main-white" ng-show="getCause()"> {{getCause()}} </p>
+      <p class="large vr-dark-grey" ng-show="timeDiff > 0">Myöhässä</p>
+      <p class="large vr-dark-grey" ng-show="timeDiff < 0">Aikaisessa</p>
+      <p class="large vr-dark-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
+      <p class="small vr-dark-grey" ng-show="getCause()"> {{getCause()}} </p>
+      <!-- <p class="small vr-dark-grey" ng-show="true"> {{"Liikennetekninen asia"}} </p> -->
       <!-- Juna aikataulussa -->
-      <p class="timeDiff vr-main-white centered" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
+      <p class="large vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
     </div>
-    <div ng-show="timeDiff === undefined">
-      <p class="timeDiff vr-main-white">Juna ei liikenteessä</p>
+    <div class="boxContent bg-vr-light-green" ng-show="timeDiff === undefined">
+      <p class="large vr-dark-grey">Juna ei liikenteessä</p>
     </div>
   </div>
 
+  <!-- <div class="timeTableHeader bg-vr-white" ng-show="prevStops || nextStops">
+
+  </div> -->
   <!-- Previous stop -->
-  <div class="prevStop">
-
+  <div class="box right shadow" ng-show="prevStops.length > 0">
+    <div class="boxHeader bg-vr-dark-grey">
+      <p class="vr-light-green medium">Edellinen asema</p>
+    </div>
+    <div class="boxContent bg-vr-light-green">
+      <p class="vr-dark-grey large">{{prevStops[prevStops.length-1].name | remove: ' asema'}}</h1>
+      <p class="vr-dark-grey small-padding">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
+    </div>
   </div>
+
+  <!-- Next stops -->
+  <div ng-show="nextStops">
+    <div ng-repeat="stop in nextStops track by stop.scheduledTime" class="left box shadow" ng-show="nextStops">
+      <div class="boxHeader bg-vr-main-green">
+        <p class="vr-white medium">Tulossa</p>
+      </div>
+      <div class="boxContent bg-vr-light-green">
+        <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
+        <p class="medium vr-dark-grey">{{stop.liveEstimateTime | fromNow}}</p>
+        <p class="vr-dark-grey">Raide {{stop.commercialTrack}}</p>
+      </div>
+    </div>
+  </div>
+
 </ion-content>

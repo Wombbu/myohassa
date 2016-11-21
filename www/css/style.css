@@ -5,18 +5,78 @@ input[type="number"] {
   text-align: center;
 }
 
-div.timeDiff {
-  height: 120px;
-  padding-top: 17px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  text-align: center;
+p,h1,h2,h3 {
+  margin: 0px;
+  padding: 0px;
 }
 
-p.timeDiff {
-  font-size: 35px;
-  line-height: 35px;
+.vr-round {
+  border-radius: 5px;
+}
+
+div.box {
+  height: 140px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+
+div.right {
+  margin-right: -5px;
+  margin-left: 20px;
+}
+
+div.left {
+  margin-left: -5px;
+  margin-right: 20px;
+}
+
+div.leftBox {
+  height: 120px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-left: -5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+div.boxHeader {
+  flex:30%;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+div.boxContent {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  flex: 70%;
+  padding: 10px;
+}
+
+.shadow {
+  box-shadow: 0px 0px 8px #888888;
+}
+
+div.timeTableRow {
+  padding: 10;
+  height: 120px;
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .centered {

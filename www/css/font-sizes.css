@@ -1,0 +1,27 @@
+.x-small {
+  font-size: 12px;
+}
+.small {
+  font-size: 15px;
+}
+.medium {
+  font-size: 20px;
+}
+.large {
+  font-size: 30px;
+  line-height: normal;
+}
+.xlarge {
+  font-size: 40px;
+}
+.xxlarge {
+  font-size: 50px;
+}
+
+.small-padding {
+  padding-top: 10px;
+}
+
+.xsmall-padding {
+  padding-top: 3px;
+}

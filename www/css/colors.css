@@ -1,11 +1,62 @@
+/*Bg colors*/
 .bg-vr-main-green {
   background-color: #57A50B;
+}
+
+.bg-vr-light-green {
+  background-color: #EEF3EE;
+}
+
+.bg-vr-dark-green {
+  background-color: #077F00;
 }
 
 .bg-vr-blue {
   background-color: #2479B3;
 }
 
+.bg-vr-white {
+  background-color: white;
+}
+
+.bg-vr-dark-grey {
+  background-color: #4F5D5D;
+}
+
+.bg-vr-grey {
+  background-color: #A5ACAF;
+}
+
+/*Text colors*/
 .vr-main-white {
   color: white;
+}
+
+/*Text colors*/
+.vr-main-green {
+  color: #57A50B;
+}
+
+.vr-light-green {
+  color: #EEF3EE;
+}
+
+.vr-dark-green {
+  color: #077F00;
+}
+
+.vr-blue {
+  color: #2479B3;
+}
+
+.vr-white {
+  color: white;
+}
+
+.vr-dark-grey {
+  color: #4F5D5D;
+}
+
+.vr-grey {
+  color: #A5ACAF;
 }

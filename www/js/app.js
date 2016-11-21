@@ -17,7 +17,8 @@ angular.module('app', ['ionic', 'ngCordova'])
   });
 })
 
-.config(($stateProvider, $urlRouterProvider) => {
+.config(($stateProvider, $urlRouterProvider, $ionicConfigProvider) => {
+  $ionicConfigProvider.scrolling.jsScrolling(false);
   $stateProvider
     .state('choose', {
       url: '/choose',
@@ -80,8 +81,22 @@ angular.module('app', ['ionic', 'ngCordova'])
 
 .filter('abs', () => (num) => Math.abs(num))
 
+.filter('date', () => (dateStr) => {
+  const date = moment(dateStr)
+  return date.fromNow()
+})
+
+.filter('fromNow', () => (dateStr) => {
+  const date = moment(dateStr)
+  return date.locale("fi").fromNow()
+})
+
+
+
+.filter("remove", () => (input, remove) => !input || input.replace(remove, ''))
+
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
-  $scope.train = {number:65}
+  $scope.train = {number:144}
 
   const fetchDataAndSwitchScene = () => {
     uiUtil.load()
@@ -95,11 +110,11 @@ angular.module('app', ['ionic', 'ngCordova'])
 })
 
 .controller('InfoCtrl', function($ionicPlatform, $scope, data) {
-  console.log(data)
   const onlyPassengerStops = (stop) => stop.trainStopping && stop.commercialStop
+  const onlyArrivals = (stop) => stop.type === 'ARRIVAL'
 
   const causeCodeToExplanation = (cause) => data.causes.filter((cause2) => cause.categoryCode == cause2.categoryCode)[0].categoryName
-  const getCausesForStop = (stop) => {
+  const getCauseExplanationsForStop = (stop) => {
     stop.causes = stop.causes.map(causeCodeToExplanation)
     return stop
   }
@@ -119,22 +134,19 @@ angular.module('app', ['ionic', 'ngCordova'])
 
     const stops =
       train.timeTableRows
-        .map(getCausesForStop)
-        .map(getStationName)
-        .filter(onlyPassengerStops)
+      .map(getCauseExplanationsForStop)
+      .map(getStationName)
+      .filter(onlyArrivals)
+      .filter(onlyPassengerStops)
 
     const prevStops = stops.filter((stop) => !stop.liveEstimateTime)
     const nextStops = stops.filter((stop) => stop.liveEstimateTime)
-    console.log("Prev: ", prevStops)
-    console.log("Next: ", nextStops)
 
-    const trainMoving = nextStops[0] ? true : false;
-    if(trainMoving) {
+    if(nextStops[0]) {
       $scope.timeDiff = nextStops[0].differenceInMinutes
       $scope.prevStops = prevStops;
       $scope.nextStops = nextStops;
     }
-
   }
   setScopeData(data.trainInfo)
 })
