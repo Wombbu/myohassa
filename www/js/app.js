@@ -12,6 +12,7 @@ const app = angular.module('app', ['ionic', 'ngCordova'])
 })
 
 .config(($stateProvider, $urlRouterProvider, $ionicConfigProvider) => {
+  $ionicConfigProvider.views.maxCache(0);
   $ionicConfigProvider.scrolling.jsScrolling(false);
   $stateProvider
     .state('choose', {
@@ -29,7 +30,7 @@ const app = angular.module('app', ['ionic', 'ngCordova'])
     .state('station-info', {
       url: '/station-info',
       templateUrl: './templates/station-info.html',
-      controller: 'StationInfoCtrl' });
+      controller: 'StationInfoCtrl' })
   $urlRouterProvider.otherwise('/choose');
 })
 

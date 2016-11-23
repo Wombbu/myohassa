@@ -39,6 +39,14 @@ div.box {
   border-radius: 2px;
 }
 
+div.small {
+  height: 90px;
+}
+
+div.big {
+  height: 140px;
+}
+
 div.right {
   margin-right: 10px;
   margin-left: 40px;
@@ -65,10 +73,17 @@ div.boxHeader {
   border-top-left-radius: 2px;
   text-align: left;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   flex-direction: column;
-  padding-left: 15px;
-  padding-top: 10px;
+  padding-left: 10px;
+}
+
+div.small .boxHeader {
+  padding-bottom: 2px;
+}
+
+div.big .boxHeader {
+  padding-bottom: 5px;
 }
 
 div.boxContent {
