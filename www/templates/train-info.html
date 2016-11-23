@@ -6,44 +6,46 @@
 </ion-header-bar>
 
 <ion-content class="has-header bg-light-grey">
-  <!-- Time difference -->
+  <!-- Train info-->
   <div class="box left shadow">
     <div class="boxHeader bg-vr-blue">
       <p class="vr-main-white medium">Junatietoja</p>
     </div>
-    <div class="boxContent bg-vr-white">
+    <div ng-show="trainType && trainNumber" class="boxContent bg-vr-white">
       <p class="large vr-dark-grey">{{trainType}}-{{trainNumber}}</p>
-      <p class="medium vr-grey">Pituus {{length}} metriä</p>
-      <p class="medium vr-grey">Huippunopeus {{topSpeed}} km/h</p>
+      <p class="medium vr-grey" ng-show="length">Pituus {{length}} metriä</p>
+      <p class="medium vr-grey" ng-show="topSpeed">Huippunopeus {{topSpeed}} km/h</p>
+      <p class="medium vr-grey" ng-show="!topSpeed && !length">Kokoonpanotietoja ei saatavilla tälle päivälle</p>
+    </div>
+    <div ng-show="!trainType" class="boxContent bg-vr-white">
+      <p class="medium vr-dark-grey">Junatietoja ei saatavilla tälle päivälle</p>
 
     </div>
   </div>
 
-  <!-- Previous stop -->
-  <div ng-show="prevStops.length > 0">
+  <!-- Train setup info -->
+  <div ng-show="wagonAmount && locomotives">
     <div class="box left shadow">
       <div class="boxHeader bg-vr-blue">
-        <p class="vr-light-green medium">Vaunutietoa</p>
+        <p class="vr-main-white medium">Vaunutietoa</p>
       </div>
       <div class="boxContent bg-vr-white">
-        <p class="vr-dark-grey large">{{prevStops[prevStops.length-1].name | remove: ' asema'}}</h1>
-        <p class="vr-dark-grey medium">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
+        <p class="vr-dark-grey large">Vaunuja: {{wagonAmount}}</h1>
+        <p class="vr-grey medium small-padding">Vetureita: {{locomotives}}</h1>
       </div>
     </div>
   </div>
 
-  <!-- Next stops -->
-  <div ng-show="nextStops.length > 0" style="padding-bottom: 10px">
-    <div ng-show="nextStops.length > 0" ng-repeat="stop in nextStops track by stop.scheduledTime" class="left box shadow">
+  <!-- Special wagons -->
+  <div style="padding-bottom: 10px">
+    <div ng-repeat="wagon in specialWagons track by wagon.location" class="right box shadow">
       <div class="boxHeader bg-vr-main-green">
-        <p class="vr-white medium">Tulossa</p>
+        <p class="vr-white medium">Erikoisvaunu</p>
       </div>
       <div class="boxContent bg-vr-white">
-        <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
-        <p class="medium vertical-padding vr-grey" ng-show="!stop.cancelled">{{stop.liveEstimateTime | fromNow}}</p>
-        <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.commercialTrack}}</p>
-        <!-- If the stop is cancelled -->
-        <p class="medium vr-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
+        <p class="large vr-dark-grey" ng-show="wagon.catering">Ravintolavaunu</p>
+        <p class="large vr-dark-grey" ng-show="wagon.luggage">Matkatavara</p>
+        <p class="medium vr-grey">Vaunu {{wagon.location}}</p>
       </div>
     </div>
   </div>
