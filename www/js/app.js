@@ -12,7 +12,6 @@ const app = angular.module('app', ['ionic', 'ngCordova'])
 })
 
 .config(($stateProvider, $urlRouterProvider, $ionicConfigProvider) => {
-  $ionicConfigProvider.views.maxCache(0);
   $ionicConfigProvider.scrolling.jsScrolling(false);
   $stateProvider
     .state('choose', {

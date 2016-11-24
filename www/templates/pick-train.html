@@ -1,29 +1,30 @@
-<ion-header-bar align-title="center" class="bar-positive" ng-style="{'background-color': '#57A50B'}">
+<!-- <ion-header-bar align-title="center" class="bar-positive" ng-style="{'background-color': '#57A50B'}">
   <h1 class="title">Live-junat</h1>
-</ion-header-bar>
+</ion-header-bar> -->
+<ion-view view-title="Valitse juna">
+  <ion-content class="has-header">
+    <div class="list list-inset">
+      <h1 class="large vr-grey">Junanumero</h1>
+      <label class="item item-input">
+        <input type="number" placeholder="" ng-model="train.number">
+      </label>
+      <button class="button button-block button-positive" ng-click="tryFetchStopData(train.number)">
+        Liveseuranta
+      </button>
+      <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
+        Vaunut ja tietoa
+      </button>
+      <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
+        Ravintolavaunun hinnasto
+      </button>
 
-<ion-content class="has-header">
-  <div class="list list-inset">
-    <h1 class="large vr-grey">Junanumero</h1>
-    <label class="item item-input">
-      <input type="number" placeholder="" ng-model="train.number">
-    </label>
-    <button class="button button-block button-positive" ng-click="tryFetchStopData(train.number)">
-      Liveseuranta
-    </button>
-    <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
-      Vaunut ja tietoa
-    </button>
-    <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
-      Ravintolavaunun hinnasto
-    </button>
-
-    <h1 class="large vr-grey">Aseman lyhenne</h1>
-    <label class="item item-input">
-      <input type="text" placeholder="HKI" ng-model="station.name">
-    </label>
-    <button class="button button-block button-positive" ng-click="tryFetchStationData(station.name)">
-      Aseman aikataulu
-    </button>
-  </div>
-</ion-content>
+      <h1 class="large vr-grey">Aseman lyhenne</h1>
+      <label class="item item-input">
+        <input type="text" placeholder="HKI" ng-model="station.name">
+      </label>
+      <button class="button button-block button-positive" ng-click="tryFetchStationData(station.name)">
+        Aseman aikataulu
+      </button>
+    </div>
+  </ion-content>
+</ion-view>
