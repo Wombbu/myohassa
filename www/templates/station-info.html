@@ -1,0 +1,39 @@
+<!-- <ion-header-bar align-title="center" class="bar-positive shadow" ng-style="{'background-color': '#57A50B'}">
+  <div class="buttons">
+    <a class="button icon-left ion-chevron-left button-clear header-button" ui-sref="choose"></a>
+  </div>
+  <h1 class="title" ng-show="(trainType && trainNumber)">{{trainType}}-{{trainNumber}}</h1>
+</ion-header-bar> -->
+
+<ion-view view-title="Liveseuranta">
+  <ion-content class="has-header bg-light-grey">
+    <!-- Time difference -->
+    <div class="box big left shadow">
+      <div class="boxHeader bg-vr-blue">
+        <p class="vr-main-white medium">Asema</p>
+      </div>
+      <div class="boxContent bg-vr-white">
+        <p class="large vr-dark-grey">Helsinki
+        </p>
+        <p class="medium vr-grey">{{stationTrains.length}} junaa lähtee seuraavan kahden tunnin aikana</p>
+      </div>
+    </div>
+
+    <!-- Departures -->
+    <div ng-show="departures.length > 0" style="padding-bottom: 10px">
+      <div ng-repeat="train in departures">
+        <div  class="right box small shadow" ng-click="clickTrain(train.number)">
+          <div class="boxHeader bg-vr-main-green">
+            <p class="vr-white small">{{train.departures.locale("fi").fromNow()}}</p>
+          </div>
+          <div class="boxContent bg-vr-white">
+            <p class="medium-large vr-dark-grey">{{train.name}}-{{train.number}}</p>
+            <p class="medium vr-grey">Raiteelta {{train.departureTrack}}</p>
+            <!-- If the stop is cancelled -->
+            <p class="medium vr-grey" ng-show="train.timeTableRows.cancelled">Pysähdys peruttu!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

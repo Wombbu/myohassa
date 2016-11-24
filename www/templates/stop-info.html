@@ -1,0 +1,57 @@
+<!-- <ion-header-bar align-title="center" class="bar-positive shadow" ng-style="{'background-color': '#57A50B'}">
+  <div class="buttons">
+    <a class="button icon-left ion-chevron-left button-clear header-button" ui-sref="choose"></a>
+  </div>
+  <h1 class="title" ng-show="(trainType && trainNumber)">{{trainType}}-{{trainNumber}}</h1>
+</ion-header-bar> -->
+<ion-view view-title="Liveseuranta">
+  <ion-content class="has-header bg-light-grey">
+    <!-- Time difference -->
+    <div class="box left shadow">
+      <div class="boxHeader bg-vr-blue">
+        <p class="vr-main-white medium">Aikataulussa?</p>
+      </div>
+      <div class="boxContent bg-vr-white" ng-show="timeDiff !== undefined">
+        <!-- Juna ei aikataulussa -->
+        <p class="large vr-dark-grey" ng-show="timeDiff > 0">Myöhässä</p>
+        <p class="large vr-dark-grey" ng-show="timeDiff < 0">Aikaisessa</p>
+        <p class="large vr-dark-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
+        <p class="small vr-dark-grey" ng-show="getCause()"> {{getCause()}} </p>
+        <!-- Juna aikataulussa -->
+        <p class="large vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
+      </div>
+      <div class="boxContent bg-vr-white" ng-show="timeDiff === undefined">
+        <p class="large vr-dark-grey">Juna ei liikenteessä</p>
+      </div>
+    </div>
+
+    <!-- Previous stop -->
+    <div ng-show="prevStops.length > 0">
+      <div class="box right shadow">
+        <div class="boxHeader bg-vr-dark-grey">
+          <p class="vr-light-green medium">Edellinen asema</p>
+        </div>
+        <div class="boxContent bg-vr-white">
+          <p class="vr-dark-grey large">{{prevStops[prevStops.length-1].name | remove: ' asema'}}</h1>
+          <p class="vr-grey medium small-padding">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next stops -->
+    <div ng-show="nextStops.length > 0" style="padding-bottom: 10px">
+      <div ng-show="nextStops.length > 0" ng-repeat="stop in nextStops track by stop.scheduledTime" class="left box shadow">
+        <div class="boxHeader bg-vr-main-green">
+          <p class="vr-white medium">Tulossa</p>
+        </div>
+        <div class="boxContent bg-vr-white">
+          <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
+          <p class="medium vertical-padding vr-grey" ng-show="stop.time">{{stop.time.locale("fi").fromNow()}}</p>
+          <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.commercialTrack}}</p>
+          <!-- If the stop is cancelled -->
+          <p class="medium vr-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
