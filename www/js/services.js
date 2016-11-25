@@ -62,7 +62,14 @@ app
   this.fetchTrainInfo = (trainNumber) => (success, error) => {
     const getTrainInfo = get(`https://rata.digitraffic.fi/api/v1/compositions/${trainNumber}?departure_date=${moment().format('YYYY-MM-DD')}`)
     getTrainInfo(
-      (res) => !(res.data.code && res.data.code === 'COMPOSITION_NOT_FOUND') ? (trainInfo = res.data, success()) : error("Junalle ei löytynyt vaunutietoa. Onkohan junanumero oikea?"),
+      (res) => {
+        if (!res.data.code) {
+          trainInfo = res.data
+          success()
+        } else {
+          error("Junalle ei löytynyt vaunutietoa. Onkohan junanumero oikea?")
+        }
+      },
       () => error(errorMsg)
     )
   }
@@ -99,48 +106,52 @@ app
   }
 
   //To be used with row with moment time
-  p.momentPassed = (passed, now) => row => now.diff(row.time) > 0 ? passed : !passed
+  p.momentPassed = (now) => (passed) => row => now.diff(row.time) > 0 ? passed : !passed
 
-  const causeCodeToExplanation = (explanations) => (cause) => {
+  p.causeCodeToExplanation = explanations => cause => {
     const explanation = explanations.filter((exp) => cause.categoryCode == exp.categoryCode)[0]
     return explanation ? explanation.categoryName : "Syykoodi: " + cause.categoryCode
   }
-  p.getCauseExplanations = (causes) => (row) => {
-    row.causes = row.causes.map(causeCodeToExplanation(causes))
-    return row
+  p.getCauseExplanations = causes => row => {
+    const explanations = row.causes.map(causeCodeToExplanation(causes))
+    return Object.assign({}, row, explanations)
   }
 
-  p.stationCodeToName = (stations) => (code) => {
+  p.stationCodeToName = stations => code => {
     var station = stations.filter((station) => code == station.stationShortCode)
     return station[0] ? station[0].stationName : code
   }
-  p.getStationName = (stations) => (stop) => {
-    stop.name = this.stationCodeToName(stations)(stop.stationShortCode)
-    return stop
+  p.getStationName = stations => row => {
+    const name =
+    row.name = this.stationCodeToName(stations)(row.stationShortCode)
+    return row
   }
-
-  p.betweenTimes = (now, dateParser) => (before, after) =>
-                   now.diff(dateParser(before)) > 0 && now.diff(dateParser(after)) < 0
-  p.begin = (section) => section.beginTimeTableRow.scheduledTime
-  p.end   = (section) => section.endTimeTableRow.scheduledTime
-
-  p.specialWagon = (w) => w.catering || w.luggage || w.playground ||
+  p.specialWagon = w => w.catering || w.luggage || w.playground ||
                           w.disabled || w.smoking || w.video || w.pet
 
-  p.mapTimeTableRows = (func) => (train) => {
-    train.timeTableRows = train.timeTableRows.map(func);
+  p.mapTimeTableRows = func => train => {
+    train.timeTableRows = train.timeTableRows.map(func)
     return train
   }
-  p.filterTimeTableRows = (func) => (train) => {
+  p.filterTimeTableRows = func => train => {
     if(!train.timeTableRows) return train
     train.timeTableRows = train.timeTableRows.filter(func);
     return train
   }
-  p.onlyThisStation = (row) => row.stationShortCode === 'HKI'
-  p.addMomentTime = (row) => {
-    row.time = moment(row.actualTime || row.liveEstimateTime || row.scheduledTime)
-    return row;
+
+  p.onlyThisStation = row => row.stationShortCode === 'HKI'
+
+  p.addMomentTime = row => {
+    const time = moment(row.actualTime || row.liveEstimateTime || row.scheduledTime)
+    return Object.assign({}, row, {time})
   }
+  p.addMomenTimeForJourneySection = section => {
+    const begin = moment(section.beginTimeTableRow.scheduledTime)
+    const end = moment(section.endTimeTableRow.scheduledTime)
+    return Object.assign({}, section, {begin}, {end})
+  }
+  p.between = (now) => (a, b) => now.diff(a) > 0 && now.diff(b) < 0
+
   p.timeStrToMoment = row => moment(row.actualTime || row.liveEstimateTime || row.scheduledTime)
   p.earliestFirst = (train1, train2) => {
     if (train1.timeTableRows[0].time.diff(train2.timeTableRows[0].time) > 0) return 1

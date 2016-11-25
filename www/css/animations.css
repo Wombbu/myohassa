@@ -1,0 +1,23 @@
+.ng-hide-add, .box.ng-hide-remove {
+  transition: all linear 0.5s;
+}
+
+.ng-hide {
+  opacity: 0;
+}
+
+.box.ng-enter, .view-animation.ng-leave {
+  transition:0.5s linear all;
+  position:fixed;
+  width:100%;
+}
+.box.ng-enter {
+  transform:translateX(100%);
+}
+.box.ng-leave,
+.box.ng-enter.ng-enter-active {
+  transform:translateX(0%);
+}
+.box.ng-leave.ng-leave-active {
+  transform:translateX(-100%);
+}

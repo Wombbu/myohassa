@@ -21,29 +21,40 @@ app
     setScopeData(data.getStopInfo(), data.getCauses(), data.getStations(), parse))
 
   const setScopeData = (train, causes, stations, p) => {
-    console.log("before: ", train.timeTableRows)
     $scope.trainType = train.trainType
     $scope.trainNumber = train.trainNumber
 
     const stops =
       train.timeTableRows
-      .map(p.getCauseExplanations(causes))
-      .map(p.getStationName(stations))
-      .map(p.addMomentTime)
       .filter(p.onlyArrivals)
       .filter(p.onlyPassengerStops)
-    console.log("after", stops)
-    const prevStops = stops.filter(p.passed(true))
-    const nextStops = stops.filter(p.passed(false))
+      .map(p.addMomentTime)
+      .map(p.getStationName(stations))
 
-    console.log("prev", prevStops)
-    console.log("next", nextStops)
+    const hasPassed = p.momentPassed(moment())
+    const prevStops = stops.filter(hasPassed(true))
+    const nextStops = stops.filter(hasPassed(false))
 
-    if(nextStops[0]) {
-      $scope.timeDiff = nextStops[0].differenceInMinutes
-      $scope.prevStops = prevStops;
-      $scope.nextStops = nextStops;
+    const parseStopModel = row => {
+      return {
+        name: p.stationCodeToName(stations)(row.stationShortCode),
+        time: row.time,
+        track: row.commercialTrack,
+        cancelled: row.cancelled,
+        scheduledTime: moment(row.scheduledTime),
+        timeDiff: row.differenceInMinutes,
+        reasonsForBeingLate: row.causes.map(cause =>
+          p.causeCodeToExplanation(causes)(cause.categoryCode))
+      }
     }
+
+    $scope.prevStops = prevStops.map(parseStopModel)
+    $scope.nextStops = nextStops.map(parseStopModel)
+
+    if (nextStops[0]) $scope.timeDiff = nextStops[0].timeDiff
+
+    console.log("Prevstops: ", $scope.prevStops)
+    console.log("Nextstops: ", $scope.nextStops)
   }
 })
 
@@ -51,68 +62,70 @@ app
   $scope.$on('$ionicView.enter', () => setScopeData(data.getTrainInfo(), parse))
 
   const setScopeData = (train, p) => {
-    if(train.trainType && train.trainNumber) {
-      $scope.trainType = train.trainType
-      $scope.trainNumber = train.trainNumber
+    $scope.trainType = train.trainType
+    $scope.trainNumber = train.trainNumber
 
-      const betweenThese = p.betweenTimes(moment(), moment)
-      const currentSetup = train.journeySections
-        .filter((section) => betweenThese(p.begin(section), p.end(section)))[0]
-
-      if(currentSetup) {
-        $scope.locomotives = currentSetup.locomotives.length
-        $scope.topSpeed = currentSetup.maximumSpeed
-        $scope.length = currentSetup.totalLength
-        $scope.wagonAmount = currentSetup.wagons.length
-        $scope.specialWagons = currentSetup.wagons.filter(p.specialWagon)
+    const between = p.between(moment())
+    const currentSetup =
+      train.journeySections
+      .map(p.addMomenTimeForJourneySection)
+      .filter(section => between(section.begin, section.end))
+      [0]
+    console.log("current setup: ", currentSetup)
+    if(currentSetup) {
+      $scope.locomotives = currentSetup.locomotives.length
+      $scope.topSpeed = currentSetup.maximumSpeed
+      $scope.length = currentSetup.totalLength
+      $scope.wagonAmount = currentSetup.wagons.length
+      $scope.specialWagons = currentSetup.wagons.filter(p.specialWagon)
       }
-    } else {
-    alert("VOI PERSEEN PASKA TOIMIIKO TÄMÄ OIKEASTI?? (TRAININFOCONTROLLER)")
-  }
-
   }
 })
 
 .controller('StationInfoCtrl', function($scope, data, parse, uiUtil) {
-  $scope.$on('$ionicView.enter', () => setScopeData(data.getStationInfo(), parse))
+  $scope.$on('$ionicView.enter', () =>
+    setScopeData(data.getStationInfo(), data.getStations(), parse))
 
-  const setScopeData = (trains, p) => {
-    const notPassed = p.momentPassed(false, moment())
+  const setScopeData = (trains, stations, p) => {
+    const notPassed = p.momentPassed(moment())(false)
     const model =
-      _.map(trains, train => {
-        const name = train.trainType
-        const number = train.trainNumber
-        const ttRows =
-          _.chain(train.timeTableRows)
+      trains.map(train => {
+        const ttRows = train.timeTableRows;
+        const codeToName = p.stationCodeToName(stations)
+        const firstStation = codeToName(_.get(ttRows, '[0].stationShortCode'))
+        const lastStation = codeToName(ttRows[ttRows.length-1].stationShortCode)
+
+        const ttRowsWithStation =
+          train.timeTableRows
           .filter(p.onlyThisStation)
           .filter(p.onlyPassengerStops)
           .map(p.addMomentTime)
+          .map(p.getStationName(stations))
           .filter(notPassed)
-          .value()
 
-        const arrivalTimes = _.filter(ttRows, p.onlyArrivals)
-        const arrives = _.get(_.first(arrivalTimes), 'time')
-        const arrivalTrack = _.get(_.first(arrivalTimes), 'commercialTrack')
+        const arrivalTimes = ttRowsWithStation.filter(p.onlyArrivals)
+        const departureTimes = ttRowsWithStation.filter(p.onlyDeparture)
 
-        const departureTimes = _.filter(ttRows, p.onlyDeparture)
-        const departures = _.get(_.first(departureTimes), 'time')
-        const departureTrack = _.get(_.first(departureTimes), 'commercialTrack')
-
-        return {"name": name, "number": number,
-          "arrives": arrives, "arrivalTrack": arrivalTrack,
-          "departures": departures, "departureTrack": departureTrack}
+        return {
+          name: train.trainType,
+          number: train.trainNumber,
+          firstStation: firstStation,
+          lastStation: lastStation,
+          arrives: _.get(arrivalTimes[0], 'time'),
+          arrivalTrack: _.get(arrivalTimes[0], 'commercialTrack'),
+          departures: _.get(departureTimes[0], 'time'),
+          departureTrack: _.get(departureTimes[0], 'commercialTrack')
+        }
       })
 
     $scope.arrivals =
-      _.chain(model)
+      model
       .filter(row => row.arrives)
       .sort((a, b) => p.earliestFirst2(a.arrives, b.arrives))
-      .value()
     $scope.departures =
-     _.chain(model)
+     model
      .filter(row => row.departures)
      .sort((a, b) => p.earliestFirst2(a.departures, b.departures))
-     .value()
   }
 
   $scope.clickTrain = (trainNumber) =>

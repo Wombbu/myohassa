@@ -7,21 +7,30 @@
 <ion-view view-title="Liveseuranta">
   <ion-content class="has-header bg-light-grey">
     <!-- Time difference -->
-    <div class="box left shadow">
-      <div class="boxHeader bg-vr-blue">
-        <p class="vr-main-white medium">Aikataulussa?</p>
-      </div>
-      <div class="boxContent bg-vr-white" ng-show="timeDiff !== undefined">
-        <!-- Juna ei aikataulussa -->
-        <p class="large vr-dark-grey" ng-show="timeDiff > 0">Myöhässä</p>
-        <p class="large vr-dark-grey" ng-show="timeDiff < 0">Aikaisessa</p>
-        <p class="large vr-dark-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
-        <p class="small vr-dark-grey" ng-show="getCause()"> {{getCause()}} </p>
-        <!-- Juna aikataulussa -->
-        <p class="large vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
-      </div>
-      <div class="boxContent bg-vr-white" ng-show="timeDiff === undefined">
-        <p class="large vr-dark-grey">Juna ei liikenteessä</p>
+      <div class="box left shadow" ng-show"trainType">
+        <div class="boxHeader bg-vr-blue">
+          <p class="vr-main-white medium">Yleisinfo</p>
+        </div>
+        <div class="boxContent bg-vr-white">
+          <p class="large vr-dark-grey">{{trainType}}-{{trainNumber}}</p>
+          <div ng-show="nextStops[0] && nextStops[0].timeDiff">
+            <!-- Juna ei aikataulussa -->
+            <p class="medium vr-grey" ng-show="timeDiff > 0">Myöhässä</p>
+            <p class="medium vr-grey" ng-show="timeDiff < 0">Aikaisessa</p>
+            <p class="medium vr-grey" ng-show="timeDiff != 0">{{timeDiff | abs}} min</p>
+            <p class="medium vr-grey" ng-show="getCause()"> {{getCause()}} </p>
+            <!-- Juna aikataulussa -->
+            <p class="medium vr-dark-grey" ng-show="timeDiff == 0">Minuutilleen aikataulussa</p>
+          </div>
+          <div ng-show="nextStops[0] && !prevStops[0]">
+            <p class="medium vr-grey">Juna ei ole vielä lähtenyt</p>
+          </div>
+          <div ng-show="!nextStops[0] && prevStops[0]">
+            <p class="medium vr-grey">Junalle ei löydy tulevia asemoita</p>
+          </div>
+          <div ng-show="!nextStops[0] && !prevStops[0]">
+            <p class="medium vr-grey">Junalle ei löydy aikataulutietoja</p>
+        </div>
       </div>
     </div>
 
@@ -33,7 +42,7 @@
         </div>
         <div class="boxContent bg-vr-white">
           <p class="vr-dark-grey large">{{prevStops[prevStops.length-1].name | remove: ' asema'}}</h1>
-          <p class="vr-grey medium small-padding">{{prevStops[prevStops.length-1].actualTime | fromNow}}</h1>
+          <p class="vr-grey medium small-padding">{{prevStops[prevStops.length-1].time | fromNow}}</h1>
         </div>
       </div>
     </div>
@@ -47,7 +56,7 @@
         <div class="boxContent bg-vr-white">
           <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
           <p class="medium vertical-padding vr-grey" ng-show="stop.time">{{stop.time.locale("fi").fromNow()}}</p>
-          <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.commercialTrack}}</p>
+          <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.track}}</p>
           <!-- If the stop is cancelled -->
           <p class="medium vr-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
         </div>
