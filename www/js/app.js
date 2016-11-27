@@ -1,4 +1,4 @@
-const app = angular.module('app', ['ionic', 'ngCordova'])
+const app = angular.module('app', ['ionic', 'ngCordova', 'ngAnimate'])
 
 .run(($ionicPlatform, $rootScope, $ionicViewSwitcher, $ionicHistory) => {
   $ionicPlatform.ready(() => {

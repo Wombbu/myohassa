@@ -11,8 +11,7 @@
     <div class="box small left shadow" ng-show="departures">
 
       <div class="boxContent bg-vr-white">
-        <p class="large vr-dark-grey">Helsinki
-        </p>
+        <p class="large vr-dark-grey">{{stationName | remove: ' asema'}}</p>
         <p class="medium vr-grey">{{departures.length}} junaa lähtee seuraavan kahden tunnin aikana</p>
       </div>
     </div>
@@ -22,11 +21,12 @@
       <div ng-repeat="train in departures">
         <div  class="right box small shadow" ng-click="clickTrain(train.number)">
           <div class="boxContent bg-vr-white">
-            <p class="medium vr-dark-grey">{{train.name}}-{{train.number}}</p>
-            <p class="x-small vr-grey">
-              {{train.firstStation | remove: ' asema'}} - {{train.lastStation | remove: ' asema'}}</p>
-            <p class="vr-white small">{{train.departures.locale("fi").fromNow()}}</p>
-            <p class="x-small vr-grey">Raiteelta {{train.departureTrack}}</p>
+            <p class="medium vr-dark-grey neg-margin">
+              {{train.firstStation | remove: ' asema'}} - {{train.lastStation | remove: ' asema'}}
+            </p>
+            <p class="small vr-dark-grey">{{train.name}}-{{train.number}}</p>
+            <p class="vr-dark-grey x-small neg-margin">{{train.departures.locale("fi").fromNow()}}</p>
+            <p class="x-small vr-dark-grey neg-margin">Raiteelta {{train.departureTrack}}</p>
             <!-- If the stop is cancelled -->
             <p class="medium vr-grey" ng-show="train.timeTableRows.cancelled">Pysähdys peruttu!</p>
           </div>

@@ -28,3 +28,8 @@
 .xsmall-padding {
   padding-top: 3px;
 }
+
+.neg-margin {
+  margin-top: -2px;
+  margin-bottom: -2px;
+}
