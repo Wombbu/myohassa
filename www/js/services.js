@@ -155,6 +155,8 @@ app
     else return -1
   }
 
+  p.trainCategories = {longDistance: 'Long-distance', cargo: 'Cargo', commuter: 'Commuter'}
+
   p.specialWagon = wagon => wagon.catering || wagon.luggage || wagon.playground ||
                           wagon.disabled || wagon.smoking || wagon.video || wagon.pet
 

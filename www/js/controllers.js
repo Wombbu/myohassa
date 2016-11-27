@@ -118,6 +118,7 @@ app
         return {
           name: train.trainType,
           number: train.trainNumber,
+          category: train.trainCategory,
           firstStation: firstStation,
           lastStation: lastStation,
           arrives: _.get(arrivalTimes[0], 'time'),
@@ -126,6 +127,7 @@ app
           departureTrack: _.get(departureTimes[0], 'commercialTrack')
         }
       })
+      .filter(train => train.category == p.trainCategories.longDistance)
 
     $scope.arrivals =
       model
