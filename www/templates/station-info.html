@@ -8,8 +8,7 @@
 <ion-view view-title="Asemaseuranta">
   <ion-content class="has-header bg-light-grey">
     <!-- Time difference -->
-    <div class="box small left shadow" ng-show="departures">
-
+    <div class="box small left shadow fade-in-out" ng-show="departures">
       <div class="boxContent bg-vr-white">
         <p class="large vr-dark-grey">{{stationName | remove: ' asema'}}</p>
         <p class="medium vr-grey">{{departures.length}} junaa lähtee seuraavan kahden tunnin aikana</p>
@@ -19,7 +18,7 @@
     <!-- Departures -->
     <div ng-show="departures.length > 0" style="padding-bottom: 10px">
       <div ng-repeat="train in departures">
-        <div  class="right box small shadow" ng-click="clickTrain(train.number)">
+        <div  class="right box small shadow" style="margin-top: 2px;" ng-click="clickTrain(train.number)">
           <div class="boxContent bg-vr-white">
             <p class="medium vr-dark-grey neg-margin">
               {{train.firstStation | remove: ' asema'}} - {{train.lastStation | remove: ' asema'}}
