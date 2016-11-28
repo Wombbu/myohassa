@@ -6,52 +6,49 @@
 </ion-header-bar> -->
 
 <ion-view view-title="Junatietoa">
-<ion-content class="has-header bg-light-grey">
+<ion-content class="has-header bg-light-grey content">
   <!-- Train info-->
-  <div class="box left shadow">
-    <div class="boxHeader bg-vr-blue">
-      <p class="vr-main-white medium">Junatietoja</p>
-    </div>
+  <p class="vr-grey medium sub-header">Junatietoa</p>
+  <div class="box shadow" ng-show="trainType">
     <div ng-show="trainType && trainNumber" class="boxContent bg-vr-white">
       <p class="large vr-dark-grey">{{trainType}}-{{trainNumber}}</p>
       <p class="medium vr-grey" ng-show="length">Pituus {{length}} metriä</p>
       <p class="medium vr-grey" ng-show="topSpeed">Huippunopeus {{topSpeed}} km/h</p>
       <p class="medium vr-grey" ng-show="!topSpeed && !length">Kokoonpanotietoja ei saatavilla tälle päivälle</p>
     </div>
-    <div ng-show="!trainType" class="boxContent bg-vr-white">
-      <p class="medium vr-dark-grey">Junatietoja ei saatavilla tälle päivälle</p>
+  </div>
 
-    </div>
+  <div ng-show="!trainType && parsed.is" class="box shadow bg-vr-white">
+    <p class="medium vr-dark-grey">Junatietoja ei saatavilla tälle päivälle</p>
   </div>
 
   <!-- Train setup info -->
   <div ng-show="wagonAmount && locomotives">
+    <p class="vr-grey medium sub-header">Vaunutietoa</p>
     <div class="box left shadow">
-      <div class="boxHeader bg-vr-blue">
+      <!-- <div class="boxHeader bg-vr-blue">
         <p class="vr-main-white medium">Vaunutietoa</p>
-      </div>
+      </div> -->
       <div class="boxContent bg-vr-white">
-        <p class="vr-dark-grey large">Vaunuja: {{wagonAmount}}</h1>
-        <p class="vr-grey medium small-padding">Vetureita: {{locomotives}}</h1>
+        <p class="vr-dark-grey medium-large">Vaunuja: {{wagonAmount}}</h1>
+        <p class="vr-grey medium subheader-padding">Vetureita: {{locomotives}}</h1>
       </div>
     </div>
   </div>
 
   <!-- Special wagons -->
-  <div style="padding-bottom: 10px">
-    <div ng-repeat="wagon in specialWagons track by wagon.location" class="right box shadow">
-      <div class="boxHeader bg-vr-main-green">
-        <p class="vr-white medium">Erikoisvaunu</p>
-      </div>
+  <div style="padding-bottom: 10px" ng-show="specialWagons.length > 0 && parsed">
+    <p class="vr-grey medium sub-header">Erikoisvaunut</p>
+    <div ng-repeat="wagon in specialWagons track by wagon.location" class="box shadow">
       <div class="boxContent bg-vr-white">
-        <p class="large vr-dark-grey" ng-show="wagon.catering">Ravintola</p>
-        <p class="large vr-dark-grey" ng-show="wagon.luggage">Matkatavara</p>
-        <p class="large vr-dark-grey" ng-show="wagon.video">Video</p>
-        <p class="large vr-dark-grey" ng-show="wagon.pet">Lemmikki</p>
-        <p class="large vr-dark-grey" ng-show="wagon.disabled">Matkatavara</p>
-        <p class="large vr-dark-grey" ng-show="wagon.smoking">Tupakointi</p>
-        <p class="large vr-dark-grey" ng-show="wagon.playground">Leikki</p>
-        <p class="medium vr-grey">Vaunu {{wagon.location}}</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.catering">Ravintola</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.luggage">Matkatavara</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.video">Video</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.pet">Lemmikki</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.disabled">Matkatavara</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.smoking">Tupakointi</p>
+        <p class="medium vr-dark-grey" ng-show="wagon.playground">Leikki</p>
+        <p class="small vr-grey">Vaunu {{wagon.location}}</p>
       </div>
     </div>
   </div>

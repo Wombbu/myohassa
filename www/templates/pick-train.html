@@ -2,59 +2,62 @@
   <h1 class="title">Live-junat</h1>
 </ion-header-bar> -->
 <ion-view view-title="Valitse juna">
-  <ion-content class="has-header">
-    <md-content>
+  <ion-content class="has-header bg-light-grey content">
 
-      <md-tabs class="md-primary" md-selected="tabIndex">
-        <md-tab id="tab1">
-          <md-tab-label>Asemat</md-tab-label>
-            <md-tab-body style=":100%">
-              <md-content class="md-padding">
-                  <md-autocomplete
-                    md-search-text-change="filterStations(stationInput)"
-                    md-search-text="stationInput"
-                    md-selected-item="selectedStation"
-                    md-selected-item-change="selectedStationChange(selectedStation)"
-                    md-items="station in stations"
-                    md-item-text="station.stationName"
-                    md-min-length="0"
-                    placeholder="Anna aseman nimi">
-                  <md-item-template>
-                    <span
-                      md-highlight-text="stationInput"
-                      md-highlight-flags="^i">{{station.stationName}}
-                    </span>
-                  </md-item-template>
-                  <md-not-found>
-                    Asemaa ei löytynyt hakusanalla <b>{{stationInput}}</b>
-                  </md-not-found>
-                </md-autocomplete>
-                <!-- <md-button class="md-raised" ng-click="tryFetchStationData(selectedStationCode)">
-                  Hae aseman aikataulu
-                </md-button> -->
-            </md-content>
-          </md-tab-body>
-        </md-tab>
-        <md-tab id="tab2">
-          <md-tab-label>Junat</md-tab-label>
-          <md-tab-body>
-            <md-content class="md-padding">
-            <h1 class="large vr-grey">Junanumero</h1>
-            <label class="item item-input">
-              <input type="number" placeholder="" ng-model="train.number">
-            </label>
-            <button class="button button-block button-positive" ng-click="tryFetchStopData(train.number)">
-              Liveseuranta
-            </button>
-            <button class="button button-block button-positive" ng-click="tryFetchTrainData(train.number)">
-              Vaunut ja tietoa
-            </button>
-          </content>
-          </md-tab-body>
-        </md-tab>
-      </md-tabs>
+    <p class="sub-header medium vr-grey">Asemat</p>
+    <div class="box shadow">
+      <md-autocomplete
+        md-search-text-change="filterStations(stationInput)"
+        md-search-text="stationInput"
+        md-selected-item="selectedStation"
+        md-selected-item-change="selectedStationChange(selectedStation)"
+        md-items="station in stations"
+        md-item-text="station.stationName"
+        md-min-length="0"
+        placeholder="Aseman nimi">
+      <md-item-template>
+        <span
+          md-highlight-text="stationInput"
+          md-highlight-flags="^i">{{station.stationName}}
+        </span>
+      </md-item-template>
+      <md-not-found>
+        Asemaa ei löytynyt hakusanalla <b>{{stationInput}}</b>
+      </md-not-found>
+    </md-autocomplete>
+    <md-button class="md-raised" ng-click="selectedStationChange(selectedStation)">
+      Hae!
+    </md-button>
+    </div>
 
+    <p class="sub-header medium vr-grey">Junat</p>
+    <div class="box shadow">
+      <md-autocomplete
+        md-search-text-change="filterStations(stationInput)"
+        md-search-text="train.number"
+        md-selected-item="selectedTrain"
+        md-selected-item-change="selectedTrainChange(selectedStation)"
+        md-items="train in trains"
+        md-item-text="train.name"
+        md-min-length="0"
+        placeholder="Junan numero">
+      <md-item-template>
+        <span
+          md-highlight-text="stationInput"
+          md-highlight-flags="^i">{{station.stationName}}
+        </span>
+      </md-item-template>
+      <md-not-found>
+        Asemaa ei löytynyt hakusanalla <b>{{stationInput}}</b>
+      </md-not-found>
+    </md-autocomplete>
+      <md-button class="md-raised" ng-click="tryFetchStopData(train.number)">
+        Pysäkkitiedot
+      </md-button>
+      <md-button class="md-raised" ng-click="tryFetchTrainData(train.number)">
+        Kokoonpanotiedot
+      </md-button>
 
-  </md-content>
+    </div>
   </ion-content>
 </ion-view>

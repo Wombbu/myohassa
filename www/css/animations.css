@@ -1,48 +1,23 @@
-.box.ng-hide-add, .box.ng-hide-remove {
+/*.box.ng-hide-add, .box.ng-hide-remove {
   transition: all linear 0.5s;
 }
 
-.ng-hide {
+.box.ng-hide {
   opacity: 0;
+}*/
+
+@keyframes fade-in {
+  0%{ opacity: 0; }
+  100% { opacity: 100; }
 }
 
-.box.ng-enter, .box.ng-leave {
-  transition:0.5s linear all;
-  position:fixed;
-  width:100%;
-}
-.box.ng-enter {
-  transform:translateX(100%);
-}
-.box.ng-leave,
-.box.ng-enter.ng-enter-active {
-  transform:translateX(0%);
-}
-.box.ng-leave.ng-leave-active {
-  transform:translateX(-100%);
-}
-
-@keyframes left {
-  0%{ transform: translateX(-100px);
-      opacity: 0;}
-  100% { transform: translateX(0px);
-         opacity: 100;}
-}
-
-@keyframes right {
-  0%{ transform: translateX(100px);
-      opacity: 0;}
-  100% { transform: translateX(0px);
-         opacity: 100;}
-}
-
-.fade-in-out.ng-enter, .fade-in-out .ng-enter {
+/*.fade-in-out.ng-show, .fade-in-out .ng-show {
   -webkit-animation: fadeIn 0.3s;
   -moz-animation: fadeIn 0.3s;
   animation: fadeIn 0.3s;
   position: absolute; }
-.fade-in-out.ng-leave, .fade-in-out .ng-leave {
+.fade-in-out.ng-hide, .fade-in-out .ng-hide {
   -webkit-animation: fadeOut 0.3s;
   -moz-animation: fadeOut 0.3s;
   animation: fadeOut 0.3s;
-  position: absolute; }
+  position: absolute; }*/

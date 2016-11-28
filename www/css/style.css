@@ -3,12 +3,25 @@ p,h1,h2,h3 {
   padding: 0px;
 }
 
-.vr-round {
-  border-radius: 5px;
+.content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.light-tabs md-tab-content {
+  background-color: white !important;
+}
+
+p.sub-header {
+  margin-top:8px;
+  margin-left:7px;
+  margin-bottom:0px;
+  animation: fade-in;
+  animation-duration: 0.8s;
 }
 
 .shadow {
-  box-shadow: 0px 0px 8px #888888;
+  box-shadow: 0px 1px 2px #888888;
 }
 
 .vertical-padding {
@@ -17,73 +30,28 @@ p,h1,h2,h3 {
 }
 
 div.box {
-  height: 140px;
-  margin-top: 10px;
+  min-height:  30px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  margin-left: 8px;
   display: flex;
   flex-direction: column;
   border-radius: 1px;
   overflow: hidden;
-}
-
-div.small {
-  height: 90px;
-}
-
-div.big {
-  height: 140px;
-}
-
-div.right {
-  margin-right: 10px;
-  margin-left: 40px;
-  opacity: 1;
-  /*animation-name: right;
-  animation-duration: 1.2s;
-  transform: translateX(0);
-  -webkit-transition-timing-function: ease;
-  transition-timing-function: ease;*/
-}
-
-div.left {
-  margin-left: 10px;
-  margin-right: 40px;
-  opacity: 1;
-  /*animation-name: left;
-  animation-duration: 1.2s;
-  transform: translateX(0);
-  transition-timing-function: ease;
-  -webkit-transition-timing-function: ease;*/
-}
-
-div.boxHeader {
-  flex:30%;
-  text-align: left;
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
-  padding-left: 10px;
-}
-
-div.boxContent:active {
-  background-color: #d3d3d3;
-}
-
-div.small .boxHeader {
-  padding-bottom: 2px;
-}
-
-div.big .boxHeader {
-  padding-bottom: 5px;
-}
-
-div.boxContent {
+  display: block;
+  animation: fade-in;
+  animation-duration: 0.8s;
   text-align: left;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  flex: 70%;
+  flex: 100%;
   padding: 10px 20px 10px 20px;
   background-color: white;
   transition: background-color 0.5s linear; /* vendorless fallback */
   -webkit-transition: background-color 0.5s linear; /*safari and chrome */
+}
+
+div.box:active {
+  background-color: #d3d3d3;
 }

@@ -9,6 +9,7 @@
 }
 .medium-large {
   font-size: 24px;
+  line-height: normal;
 }
 .large {
   font-size: 30px;
@@ -23,6 +24,10 @@
 
 .small-padding {
   padding-top: 10px;
+}
+
+.subheader-padding {
+  padding-top: 6px;
 }
 
 .xsmall-padding {

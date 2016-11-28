@@ -1,7 +1,6 @@
 app
 .controller('ChooseCtrl', function($scope, $state, data, uiUtil, parse) {
   $scope.train = {number: 26}
-  $scope.station = {name: "TPE"}
   $scope.selectedStationCode = undefined
   data.fetchStations()
 
@@ -22,23 +21,26 @@ app
   $scope.stationInput = ""
 
   $scope.tryFetchStopData = (train) =>
-    ($scope.train.number) ? uiUtil.getDataSetState(data.fetchStops(train), "stop-info")
+    ($scope.train.number)
+      ? uiUtil.getDataSetState(data.fetchStops(train), "stop-info")
       : uiUtil.toast('Antaisitko junanumeron?')
 
   $scope.tryFetchTrainData = (train) =>
-    ($scope.train.number) ? uiUtil.getDataSetState(data.fetchTrainInfo(train), "train-info")
+    ($scope.train.number)
+      ? uiUtil.getDataSetState(data.fetchTrainInfo(train), "train-info")
       : uiUtil.toast('Antaisitko junanumeron?')
 
   const tryFetchStationData = (station) =>
-    (station) ? uiUtil.getDataSetState(data.fetchStationInfo(station), "station-info")
-      : uiUtil.toast('Antaisitko asematunnuksen?')
+    (station)
+      ? uiUtil.getDataSetState(data.fetchStationInfo(station), "station-info")
+      : uiUtil.toast('Valitsisitko aseman?')
 })
 
 .controller('StopInfoCtrl', function($scope, data, parse, uiUtil) {
   $scope.$on('$ionicView.enter', () =>
     setScopeData(data.getStopInfo(), data.getCauses(), data.getStations(), parse))
-
   const setScopeData = (train, causes, stations, p) => {
+    $scope.show = {show: false}
     $scope.trainType = train.trainType
     $scope.trainNumber = train.trainNumber
 
@@ -70,10 +72,7 @@ app
     $scope.prevStops = prevStops.map(parseStopModel)
     $scope.nextStops = nextStops.map(parseStopModel)
     $scope.prevStop = _.last($scope.prevStops)
-    console.log($scope.prevStop)
     $scope.timeDiff = _.get($scope.nextStops[0], 'timeDiff')
-    console.log("Prevstops: ", $scope.prevStops)
-    console.log("Nextstops: ", $scope.nextStops)
   }
 
   $scope.tryFetchStationData = (station) =>
@@ -81,12 +80,15 @@ app
 
   $scope.tryFetchTrainData = (train) =>
     uiUtil.getDataSetState(data.fetchTrainInfo(train), "train-info")
+    $scope.finished = {};
 })
 
 .controller('TrainInfoCtrl', function($scope, data, parse) {
+  $scope.parsed = {is: false}
   $scope.$on('$ionicView.enter', () => setScopeData(data.getTrainInfo(), parse))
 
   const setScopeData = (train, p) => {
+    $scope.parsed = {is: false}
     $scope.trainType = train.trainType
     $scope.trainNumber = train.trainNumber
 
@@ -96,7 +98,7 @@ app
       .map(p.addMomenTimeForJourneySection)
       .filter(section => between(section.begin, section.end))
       [0]
-    console.log("current setup: ", currentSetup)
+
     if(currentSetup) {
       $scope.locomotives = currentSetup.locomotives.length
       $scope.topSpeed = currentSetup.maximumSpeed
@@ -104,6 +106,7 @@ app
       $scope.wagonAmount = currentSetup.wagons.length
       $scope.specialWagons = currentSetup.wagons.filter(p.specialWagon)
     }
+    $scope.parsed = {is: true}
   }
 })
 
@@ -112,10 +115,10 @@ app
     setScopeData(data.getStationInfo(), data.getStations(), parse))
 
   const setScopeData = (stationData, stations, p) => {
-    console.log("Station data: ", stationData, stations)
     const notPassed = p.momentPassed(moment())(false)
     const codeToName = p.stationCodeToName(stations)
     $scope.stationName = codeToName(stationData.code)
+
     const model =
       stationData.trains.map(train => {
         const ttRows = train.timeTableRows;
@@ -155,6 +158,7 @@ app
      model
      .filter(row => row.departures)
      .sort((a, b) => p.earliestFirst(a.departures, b.departures))
+
   }
 
   $scope.clickTrain = (trainNumber) =>
