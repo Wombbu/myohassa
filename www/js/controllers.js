@@ -1,7 +1,25 @@
 app
-.controller('ChooseCtrl', function($scope, $state, data, uiUtil) {
+.controller('ChooseCtrl', function($scope, $state, data, uiUtil, parse) {
   $scope.train = {number: 26}
   $scope.station = {name: "TPE"}
+  $scope.selectedStationCode = undefined
+  data.fetchStations()
+
+  $scope.filterStations = (searchText) => {
+    const stations = data.getStations() || data.fetchStations()
+    const bestMatchesFirst = parse.bestMatchesFirst(searchText)
+    $scope.stations = stations
+      ? stations
+        .filter((station) => parse.includes(searchText)(station.stationName))
+        .sort((station1, station2) => bestMatchesFirst(station1.stationName, station2.stationName))
+      : []
+  }
+
+  $scope.selectedStationChange = station => {
+    if(station && station.stationShortCode) tryFetchStationData(station.stationShortCode)
+  }
+
+  $scope.stationInput = ""
 
   $scope.tryFetchStopData = (train) =>
     ($scope.train.number) ? uiUtil.getDataSetState(data.fetchStops(train), "stop-info")
@@ -11,8 +29,8 @@ app
     ($scope.train.number) ? uiUtil.getDataSetState(data.fetchTrainInfo(train), "train-info")
       : uiUtil.toast('Antaisitko junanumeron?')
 
-  $scope.tryFetchStationData = (station) =>
-    ($scope.train.number) ? uiUtil.getDataSetState(data.fetchStationInfo(station), "station-info")
+  const tryFetchStationData = (station) =>
+    (station) ? uiUtil.getDataSetState(data.fetchStationInfo(station), "station-info")
       : uiUtil.toast('Antaisitko asematunnuksen?')
 })
 

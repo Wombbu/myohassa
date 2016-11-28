@@ -43,6 +43,11 @@ app
   const get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
   const requestStations = stations || get('https://rata.digitraffic.fi/api/v1/metadata/stations')
   const requestCauses   = causes   || get('https://rata.digitraffic.fi/api/v1/metadata/cause-category-codes')
+  this.requestStations = requestStations
+  this.fetchStations = () => {
+    stations ||
+    requestStations(res => stations = res.data)
+  }
 
   this.fetchStops = (trainNumber) => (success, error) => {
     const requestStops = get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
@@ -103,7 +108,7 @@ app
             callbackIfAllFetched()
           } else {
             console.log("perse", res)
-            error("Tietoja ei löytynyt. Onkohan asemakoodi oikea?")
+            error("Asemalle ei löytynyt aikataulutietoja seuraavan kahden tunnin ajalle")
           }
         },
         () => error(errorMsg)
@@ -164,5 +169,15 @@ app
     const begin = moment(section.beginTimeTableRow.scheduledTime)
     const end = moment(section.endTimeTableRow.scheduledTime)
     return Object.assign({}, section, {begin}, {end})
+  }
+
+  p.includes = text => text2 => text2.toLowerCase().includes(text.toLowerCase())
+  p.bestMatchesFirst = searchText => (a, b) => {
+    const sl = searchText.toLowerCase()
+    const al = a.toLowerCase()
+    const bl = b.toLowerCase()
+    if(al.startsWith(sl) && !bl.startsWith(sl)) return -1
+    else if(!al.startsWith(sl) && bl.startsWith(sl)) return 1
+    else return 0
   }
 })
