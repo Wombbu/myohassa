@@ -5,12 +5,10 @@
   <h1 class="title" ng-show="(trainType && trainNumber)">{{trainType}}-{{trainNumber}}</h1>
 </ion-header-bar> -->
 <ion-view view-title="Liveseuranta">
-  <ion-content class="has-header bg-light-grey">
+  <ion-content class="has-header bg-light-grey content">
     <!-- Time difference -->
-    <div class="box left shadow" ng-show"trainType">
-      <div class="boxHeader bg-vr-blue">
-        <p class="vr-main-white medium">Yleisinfo</p>
-      </div>
+    <p class="vr-grey medium sub-header">Juna</p>
+    <div class="box shadow">
       <div class="boxContent bg-vr-white" ng-click="tryFetchTrainData(trainNumber)">
         <p class="large vr-dark-grey">{{trainType}}-{{trainNumber}}</p>
         <div ng-show="nextStops[0] && timeDiff != undefined">
@@ -35,32 +33,28 @@
     </div>
     <!-- Previous stop -->
     <div ng-show="prevStop">
-      <div class="box right shadow">
-        <div class="boxHeader bg-vr-dark-grey">
-          <p class="vr-light-green medium">Edellinen asema</p>
-        </div>
+      <p class="vr-grey medium sub-header">Edellinen asema</p>
+      <div class="box shadow">
         <div class="boxContent bg-vr-white" ng-click="tryFetchStationData(prevStop.shortCode)">
-          <p class="large vr-dark-grey">{{prevStop.name | remove: ' asema'}}</h1>
-          <p class="medium vr-grey">{{prevStop.time | fromNow}}</h1>
-          <p class="medium vr-grey" ng-show="prevStop.timeDiff > 0">Myöhästyi {{prevStop.timeDiff | abs}} min</p>
-          <p class="medium vr-grey" ng-show="prevStop.timeDiff < 0">Oli etuajassa {{prevStop.timeDiff | abs}} min</p>
-          <p class="medium vr-grey" ng-show="prevStop.timeDiff == 0">Oli täsmälleen aikataulussa</p>
+          <p class="medium-large vr-dark-grey">{{prevStop.name | remove: ' asema'}}</h1>
+          <p class="small neg-margin vr-grey">{{prevStop.time | fromNow}}</h1>
+          <p class="small neg-margin vr-grey" ng-show="prevStop.timeDiff > 0">Myöhästyi {{prevStop.timeDiff | abs}} min</p>
+          <p class="small neg-margin vr-grey" ng-show="prevStop.timeDiff < 0">Oli etuajassa {{prevStop.timeDiff | abs}} min</p>
+          <p class="small neg-margin vr-grey" ng-show="prevStop.timeDiff == 0">Oli täsmälleen aikataulussa</p>
         </div>
       </div>
     </div>
 
     <!-- Next stops -->
     <div ng-show="nextStops.length > 0" style="padding-bottom: 10px">
+      <p class="vr-grey medium sub-header">Tulevat asemat</p>
       <div ng-show="nextStops.length > 0" class="left box shadow" ng-repeat="stop in nextStops track by stop.scheduledTime"
         ng-class="{small: stop != nextStops[0]}">
-        <div ng-show="stop == nextStops[0]" class="boxHeader bg-vr-main-green">
-          <p class="vr-white medium">Tulossa</p>
-        </div>
         <div class="boxContent bg-vr-white" ng-click="tryFetchStationData(stop.shortCode)">
-          <p class="large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
-          <p class="large vr-dark-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
-          <p class="medium vr-grey" ng-show="stop.time">{{stop.time.locale("fi").fromNow()}}</p>
-          <p class="medium vr-grey" ng-show="!stop.cancelled">Raide {{stop.track}}</p>
+          <p class="medium-large vr-dark-grey">{{stop.name | remove: ' asema'}}</p>
+          <p class="medium-large vr-dark-grey" ng-show="stop.cancelled">Pysähdys peruttu!</p>
+          <p class="small vr-grey" ng-show="stop.time">{{stop.time.locale("fi").fromNow()}}</p>
+          <p class="small neg-margin vr-grey" ng-show="!stop.cancelled">Raide {{stop.track}}</p>
           <!-- If the stop is cancelled -->
         </div>
       </div>

@@ -24,11 +24,11 @@
 }
 
 .bg-vr-grey {
-  background-color: #A5ACAF;
+  background-color: #A5ACAF !important;
 }
 
 .bg-light-grey {
-  background-color: #f6f6f6;
+  background-color: #f5f5f5 !important;
 }
 
 /*Text colors*/

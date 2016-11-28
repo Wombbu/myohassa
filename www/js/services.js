@@ -4,7 +4,7 @@ app
 
   this.load = () => $ionicLoading.show({
     template: 'Ladataan',
-    duration: 3000,
+    duration: 5000,
     animation: 'fade-in',
     showBackdrop: true,
     maxWidth: 200})
@@ -40,10 +40,11 @@ app
   this.getStationInfo = () => _.cloneDeep(stationInfo)
 
   const errorMsg = "Verkkovirhe. Hö."
-  const get = (url) => (success, fail) => $http({ method: 'GET', url: url }).then(success, fail)
+
+  const get = (url) => (success, fail) => $http({ method: 'GET', url: url, timeout: 5000}).then(success, fail)
   const requestStations = stations || get('https://rata.digitraffic.fi/api/v1/metadata/stations')
   const requestCauses   = causes   || get('https://rata.digitraffic.fi/api/v1/metadata/cause-category-codes')
-  this.requestStations = requestStations
+
   this.fetchStations = () => {
     stations ||
     requestStations(res => stations = res.data)
@@ -51,7 +52,9 @@ app
 
   this.fetchStops = (trainNumber) => (success, error) => {
     const requestStops = get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
-    const callbackIfAllFetched = () => !(causes && stations && stopInfo) || success()
+    const callbackIfAllFetched = () => {
+      if (causes && stations && stopInfo) success()
+    }
 
     requestStations(
       (res) => {
@@ -83,7 +86,7 @@ app
         if (!res.data.code) {
           trainInfo = res.data
           success()
-        } else error("Junalle ei löytynyt vaunutietoa. Onkohan junanumero oikea?")
+        } else error("Junalle ei löytynyt vaunutietoa tälle päivälle. Onkohan junanumero oikea?")
       },
       () => error(errorMsg)
     )
@@ -117,6 +120,8 @@ app
 })
 
 .service('parse', function() {
+  //Because the functions in 'this' are assigned / used constantly here and
+  //controllers, 'this' should be assigned to const named 'p' to keep the code cleaner
   const p = this
 
   //Timetablerows
