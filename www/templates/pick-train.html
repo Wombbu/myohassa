@@ -1,11 +1,11 @@
 <!-- <ion-header-bar align-title="center" class="bar-positive" ng-style="{'background-color': '#57A50B'}">
   <h1 class="title">Live-junat</h1>
 </ion-header-bar> -->
-<ion-view view-title="Valitse juna">
+<ion-view view-title="Rata">
   <ion-content class="has-header bg-light-grey content">
 
-    <p class="sub-header medium vr-grey">Asemat</p>
-    <div class="box shadow">
+    <p class="sub-header medium black">Asemat</p>
+    <div class="box shadow" style="padding-left: 7px; padding-right:7px">
       <md-autocomplete
         md-search-text-change="filterStations(stationInput)"
         md-search-text="stationInput"
@@ -25,13 +25,17 @@
         Asemaa ei löytynyt hakusanalla <b>{{stationInput}}</b>
       </md-not-found>
     </md-autocomplete>
-    <md-button class="md-raised" ng-click="selectedStationChange(selectedStation)">
-      Hae!
+    <div style="float: right; margin-right: -5px">
+    <div style="display:block; float:right;">
+    <md-button class="md-primary" style="margin-top:10px; margin-bottom:0px;" ng-click="selectStation(selectedStation)">
+      Hae
     </md-button>
+  </div>
+  </div>
     </div>
 
-    <p class="sub-header medium vr-grey">Junat</p>
-    <div class="box shadow">
+    <p class="sub-header medium black">Junat</p>
+    <div class="box shadow" style="padding-left: 7px; padding-right:7px">
       <md-autocomplete
         md-search-text-change="filterStations(stationInput)"
         md-search-text="train.number"
@@ -51,13 +55,19 @@
         Asemaa ei löytynyt hakusanalla <b>{{stationInput}}</b>
       </md-not-found>
     </md-autocomplete>
-      <md-button class="md-raised" ng-click="tryFetchStopData(train.number)">
-        Pysäkkitiedot
+    <div style="float:right; margin-right: -7px;">
+    <div style="display:block; float:right;">
+      <md-button class="md-primary" style="margin-top:10px; margin-bottom:0px; margin-left:-10px" ng-click="tryFetchStopData(train.number)">
+        Live-aikataulu
       </md-button>
-      <md-button class="md-raised" ng-click="tryFetchTrainData(train.number)">
-        Kokoonpanotiedot
+    </div>
+    <div style="display:block; float:right">
+      <md-button class="md-primary" style="margin-top:10px; margin-bottom:0px" ng-click="tryFetchTrainData(train.number)">
+        Vaunut
       </md-button>
-
+    </div>
+  </div>
+  </div>
     </div>
   </ion-content>
 </ion-view>
