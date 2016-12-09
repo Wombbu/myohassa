@@ -169,6 +169,8 @@ app
     else return -1
   }
 
+  p.trainCategories = {longDistance: 'Long-distance', cargo: 'Cargo', commuter: 'Commuter'}
+
   //Trains
   const notPassengerTrainCodes = ["VET", "VLI", "T", "TYO", "MUV", "SAA", "LIV", "PAI"]
   p.filterNotPassengerTrains = train => notPassengerTrainCodes.indexOf(train.trainType) < 0
