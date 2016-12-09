@@ -31,12 +31,15 @@
   background-color: #f5f5f5 !important;
 }
 
-/*Text colors*/
-.vr-main-white {
-  color: white;
+.bg-black {
+  background-color: #000000 !important;
 }
 
 /*Text colors*/
+.vr-main-white {
+  color: white !important;
+}
+
 .vr-main-green {
   color: #57A50B;
 }
@@ -58,9 +61,12 @@
 }
 
 .vr-dark-grey {
-  color: #4F5D5D;
+  color: #333333;
 }
 
 .vr-grey {
-  color: #A5ACAF;
+  color: #666666;
+}
+black: {
+  color: #000000;
 }

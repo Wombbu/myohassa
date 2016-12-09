@@ -1,6 +1,6 @@
 const app = angular.module('app', ['ionic', 'ngCordova', 'ngAnimate', 'ngMaterial'])
 
-.run(($ionicPlatform, $rootScope, $ionicViewSwitcher, $ionicHistory) => {
+.run(($ionicPlatform) => {
   $ionicPlatform.ready(() => {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -38,6 +38,10 @@ const app = angular.module('app', ['ionic', 'ngCordova', 'ngAnimate', 'ngMateria
 .filter('fromNow', () => (dateStr) => {
   const date = moment(dateStr)
   return date.locale("fi").fromNow()
+})
+
+.filter('HHMM', () => (moment) => {
+  return moment.locale('fi').format('LT')
 })
 
 .filter("remove", () => (input, remove) => !input || input.replace(remove, ''))

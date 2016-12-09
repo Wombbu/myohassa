@@ -13,14 +13,12 @@ app
   this.date = (dateStr) => moment(dateStr)
 
   this.getDataSetState = (fetchFunc, newState) => {
-    this.load()
+    //this.load()
     fetchFunc(
       () => {
-        this.stopLoad();
         $state.go(newState)
       },
       (error) => {
-        this.stopLoad();
         this.toast(error)
       })
     }
@@ -51,6 +49,7 @@ app
   }
 
   this.fetchStops = (trainNumber) => (success, error) => {
+    stopInfo = undefined
     const requestStops = get(`https://rata.digitraffic.fi/api/v1/live-trains/${trainNumber}`)
     const callbackIfAllFetched = () => {
       if (causes && stations && stopInfo) success()
@@ -80,6 +79,7 @@ app
   }
 
   this.fetchTrainInfo = (trainNumber) => (success, error) => {
+    trainInfo = undefined
     const getTrainInfo = get(`https://rata.digitraffic.fi/api/v1/compositions/${trainNumber}?departure_date=${moment().format('YYYY-MM-DD')}`)
     getTrainInfo(
       (res) => {
@@ -124,15 +124,16 @@ app
   //controllers, 'this' should be assigned to const named 'p' to keep the code cleaner
   const p = this
 
+
   //Timetablerows
-  p.onlyPassengerStops = row => row.trainStopping && row.commercialStop
+  p.onlyPassengerStops = row => row.trainStopping && row.commercialStop && row.commercialTrack
   p.onlyArrivals = row => row.type === 'ARRIVAL'
   p.onlyDeparture = row => row.type === 'DEPARTURE'
   p.onlyThisStation = stationCode => row =>
     _.upperCase(row.stationShortCode) === _.upperCase(stationCode)
   p.passed = passed => row => {
     const inPast = moment().diff(
-      moment(row.liveEstimateTime || row.actualTime || row.scheduledTime))
+      moment(row.actualTime || row.liveEstimateTime || row.scheduledTime))
     return (inPast > 0) ? passed : !passed
   }
   p.getCauseExplanations = causes => row => {
@@ -157,6 +158,9 @@ app
     const time = moment(row.actualTime || row.liveEstimateTime || row.scheduledTime)
     return Object.assign({}, row, {time})
   }
+  p.addScheduledTime = row =>
+    Object.assign({}, row, {scheduledTime: moment(row.scheduledTime)})
+
   p.momentPassed = now => passed => row => now.diff(row.time) > 0 ? passed : !passed
   p.between = (now) => (a, b) => now.diff(a) > 0 && now.diff(b) < 0
   p.earliestFirst = (a, b) => {
@@ -165,6 +169,11 @@ app
     else return -1
   }
 
+  //Trains
+  const notPassengerTrainCodes = ["VET", "VLI", "T", "TYO", "MUV", "SAA", "LIV", "PAI"]
+  p.filterNotPassengerTrains = train => notPassengerTrainCodes.indexOf(train.trainType) < 0
+
+  //Train info
   p.specialWagon = wagon => wagon.catering || wagon.luggage || wagon.playground ||
                           wagon.disabled || wagon.smoking || wagon.video || wagon.pet
 
@@ -174,6 +183,7 @@ app
     return Object.assign({}, section, {begin}, {end})
   }
 
+  //Autofill
   p.includes = text => text2 => text2.toLowerCase().includes(text.toLowerCase())
   p.bestMatchesFirst = searchText => (a, b) => {
     const sl = searchText.toLowerCase()
