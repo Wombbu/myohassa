@@ -13,7 +13,6 @@ app
   this.date = (dateStr) => moment(dateStr)
 
   this.getDataSetState = (fetchFunc, newState) => {
-    //this.load()
     fetchFunc(
       () => {
         $state.go(newState)
@@ -124,7 +123,6 @@ app
   //controllers, 'this' should be assigned to const named 'p' to keep the code cleaner
   const p = this
 
-
   //Timetablerows
   p.onlyPassengerStops = row => row.trainStopping && row.commercialStop && row.commercialTrack
   p.onlyArrivals = row => row.type === 'ARRIVAL'
@@ -175,7 +173,7 @@ app
 
   //Train info
   p.specialWagon = wagon => wagon.catering || wagon.luggage || wagon.playground ||
-                          wagon.disabled || wagon.smoking || wagon.video || wagon.pet
+                            wagon.disabled || wagon.smoking || wagon.video || wagon.pet
 
   p.addMomenTimeForJourneySection = section => {
     const begin = moment(section.beginTimeTableRow.scheduledTime)

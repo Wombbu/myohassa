@@ -20,9 +20,11 @@
                       {{train.firstStation | remove: ' asema'}} - {{train.lastStation | remove: ' asema'}}
                     </p>
                     <p class="small vr-dark-grey">{{train.name}}-{{train.number}}</p>
-                    <p class="vr-dark-grey x-small neg-margin" ng-show="train.departureDiff == undefined || train.departureDiff == 0">{{train.scheduledDeparture | HHMM}}</p>
-                    <p class="vr-dark-grey x-small neg-margin" ng-show="train.departureDiff != undefined && train.departureDiff != 0 && train.departures">
-                      {{train.scheduledDeparture | HHMM}} -> <span style="color:red">{{train.departures | HHMM}}</span>
+                    <p class="vr-dark-grey x-small neg-margin" ng-show"train.departuresInSchedule">
+                      {{train.scheduledDeparture | HHMM}}
+                    </p>
+                    <p class="vr-dark-grey x-small neg-margin" ng-show="!train.departuresInSchedule">
+                      {{train.scheduledDeparture | HHMM}} -> <span style="color:#B20F2C;">{{train.departures | HHMM}}</span>
                     </p>
                     <p class="x-small vr-dark-grey neg-margin">Raiteelta {{train.departureTrack}}</p>
                     <!-- If the stop is cancelled -->
@@ -52,11 +54,11 @@
                     {{train.firstStation | remove: ' asema'}} - {{train.lastStation | remove: ' asema'}}
                   </p>
                   <p class="small vr-dark-grey">{{train.name}}-{{train.number}}</p>
-                  <p class="vr-dark-grey x-small neg-margin" ng-show="train.arrivalDiff == undefined || train.arrivalDiff == 0">
+                  <p class="vr-dark-grey x-small neg-margin" ng-show="train.arrivesInSchedule">
                     {{train.scheduledArrival | HHMM}}
                   </p>
-                  <p class="vr-dark-grey x-small neg-margin" ng-show="train.arrivalDiff != undefined && train.arrivalDiff > 0 && train.arrives">
-                    {{train.scheduledArrival | HHMM}} -> <span style="color:red">{{train.arrives | HHMM}}</span>
+                  <p class="vr-dark-grey x-small neg-margin" ng-show="!train.arrivesInSchedule">
+                    {{train.scheduledArrival | HHMM}} -> <span style="color:#B20F2C;">{{train.arrives | HHMM}}</span>
                   </p>
 
                   <p class="x-small vr-dark-grey neg-margin">Raiteelle {{train.arrivalTrack}}</p>
